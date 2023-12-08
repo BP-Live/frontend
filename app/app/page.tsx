@@ -3,12 +3,13 @@
 import { DetailsSegment } from "@/components/details-segment";
 import { FormSegment } from "@/components/form-segment";
 import { MapSegment } from "@/components/map-segment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header";
 
 export default function AppPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [json, setJson] = useState({});
 
   const businessType = "Grocery business";
   const businessLocation = "Random street 43. Budapest, Hungary";
@@ -27,7 +28,7 @@ export default function AppPage() {
           { "top-0 bottom-0": !submitted, "-top-full bottom-full": submitted },
         )}
       >
-        <FormSegment setSubmitted={setSubmitted} />
+        <FormSegment setSubmitted={setSubmitted} setJson={setJson} />
       </div>
 
       <div className="fixed top-0 left-0 right-0 lg:right-1/2 bottom-[25vh] lg:bottom-0 grid place-items-center -z-10">

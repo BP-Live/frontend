@@ -25,8 +25,10 @@ const formSchema = z.object({
 
 export function FormSegment({
   setSubmitted,
+  setJson,
 }: {
   setSubmitted: Dispatch<SetStateAction<boolean>>;
+  setJson: Dispatch<SetStateAction<{}>>;
 }) {
   const { toast } = useToast();
 
@@ -83,6 +85,14 @@ export function FormSegment({
         description: "Geolocation is not supported by your browser.",
       });
     }
+
+    const ws = new WebSocket("ws://localhost:8000/ws");
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+
+      setJson((json) => ({ ...json, ...data }));
+    };
   };
 
   return (

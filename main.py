@@ -1,4 +1,53 @@
-import requests 
-import tarfile
-url = 'https://bvkmomehackathon.blob.core.windows.net/data/data.tar.gz?sv=2023-01-03&st=2023-12-08T13%3A00%3A00Z&se=2023-12-09T22%3A59%3A00Z&sr=b&sp=r&sig=r9vZbX7l3EiQD%2B6niCGmdaGwTiPais2QuU6lO2exiZU%3D'
-with requests.get(url, stream=True) as rx, tarfile.open(fileobj=rx.raw, mode="r:gz")  as tarobj : tarobj.extractall() 
+from fastapi import FastAPI, WebSocket
+import asyncio
+
+app = FastAPI()
+
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+
+    await websocket.send_json({"status": "pending"})
+
+    await asyncio.sleep(1)
+
+    await websocket.send_json(
+        {
+            "metadata": {
+                "location": "123 Main St, Hometown, HT 12345",
+            }
+        }
+    )
+
+    await asyncio.sleep(1)
+
+    await websocket.send_json(
+        {
+            "pros": [
+                "Offers a wide variety of vegetarian options",
+                "Cozy and inviting atmosphere",
+                "Uses locally sourced ingredients",
+            ]
+        }
+    )
+
+    await asyncio.sleep(1)
+
+    await websocket.send_json(
+        {
+            "cons": [
+                "Limited parking space",
+                "Can be noisy during peak hours",
+                "Higher price range",
+            ]
+        }
+    )
+
+    await websocket.send_json({"status": "completed"})
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="localhost", port=8000)
