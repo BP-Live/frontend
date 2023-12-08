@@ -16,6 +16,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { sendPromptAPI } from "@/app/api";
+import { RestaurantJson } from "@/lib/types";
 
 const formSchema = z.object({
   prompt: z.string().min(10, {
@@ -28,7 +29,7 @@ export function FormSegment({
   setJson,
 }: {
   setSubmitted: Dispatch<SetStateAction<boolean>>;
-  setJson: Dispatch<SetStateAction<{}>>;
+  setJson: Dispatch<SetStateAction<RestaurantJson | null>>;
 }) {
   const { toast } = useToast();
 

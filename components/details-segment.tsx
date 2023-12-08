@@ -1,6 +1,7 @@
 "use client";
 
 import { Progress } from "@/components/ui/progress";
+import { RestaurantJson } from "@/lib/types";
 
 export function DetailsSegment({
   status,
@@ -11,7 +12,7 @@ export function DetailsSegment({
   status: number;
   businessType: string;
   businessLocation: string;
-  json: {};
+  json: RestaurantJson | null;
 }) {
   return (
     <div className="flex flex-col w-full justify-center items-center">
@@ -23,7 +24,7 @@ export function DetailsSegment({
           <p className="text-xl font-bold text-center text-white -mt-1">
             Status
           </p>
-          <Progress value={json.progress} className="w-1/2" />
+          <Progress value={json?.progress || 0} className="w-1/2" />
         </div>
         <div className="flex flex-row w-full justify-center items-center gap-3 border-2 border-white rounded-xl p-2">
           <p className="text-xl font-bold text-center text-white">

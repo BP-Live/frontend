@@ -6,10 +6,11 @@ import { MapSegment } from "@/components/map-segment";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header";
+import { RestaurantJson } from "@/lib/types";
 
 export default function AppPage() {
   const [submitted, setSubmitted] = useState(false);
-  const [json, setJson] = useState({});
+  const [json, setJson] = useState<RestaurantJson | null>(null);
 
   useEffect(() => {
     console.log(json);
