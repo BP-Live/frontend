@@ -94,7 +94,7 @@ const mapOptions = {
 
 async function getMapAsync(ref: HTMLElement): Promise<google.maps.Map> {
   const { Map } = (await google.maps.importLibrary(
-    "maps"
+    "maps",
   )) as google.maps.MapsLibrary;
 
   const map = new Map(ref, { ...cameraOptions, ...mapOptions });

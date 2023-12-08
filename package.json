@@ -8,7 +8,8 @@
     "start": "next start --port 80",
     "lint": "next lint",
     "format": "prettier --check --ignore-path .gitignore .",
-    "format:fix": "prettier --write --ignore-path .gitignore ."
+    "format:fix": "prettier --write --ignore-path .gitignore .",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@googlemaps/react-wrapper": "^1.1.35",
@@ -71,11 +72,7 @@
     "postcss": "^8",
     "prettier": "^3.1.0",
     "tailwindcss": "^3.3.0",
-    "typescript": "^5"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run format:fix && git add -A ."
-    }
+    "typescript": "^5",
+    "husky": "^8.0.0"
   }
 }
