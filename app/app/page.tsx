@@ -3,7 +3,7 @@
 import { DetailsSegment } from "@/components/details-segment";
 import { FormSegment } from "@/components/form-segment";
 import { MapSegment } from "@/components/map-segment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header";
 import { RestaurantJson } from "@/lib/types";
@@ -11,6 +11,10 @@ import { RestaurantJson } from "@/lib/types";
 export default function AppPage() {
   const [submitted, setSubmitted] = useState(false);
   const [json, setJson] = useState<RestaurantJson | null>(null);
+
+  useEffect(() => {
+    console.log(json);
+  }, [json]);
 
   return (
     <div
