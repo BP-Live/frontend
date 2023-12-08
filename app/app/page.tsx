@@ -10,6 +10,10 @@ import Header from "@/components/header";
 export default function AppPage() {
   const [submitted, setSubmitted] = useState(false);
 
+  const businessType = "Grocery business";
+  const businessLocation = "Random street 43. Budapest, Hungary";
+  const status = 20;
+
   return (
     <div
       className={cn("h-full", {
@@ -34,7 +38,11 @@ export default function AppPage() {
         <div className="h-[75vh] lg:h-0" />
         <div className="min-h-[25vh] lg:text-left lg:min-h-full p-3 bg-gradient-to-tl from-bkkPurple to-bkkPink">
           <Header submitted={submitted} />
-          <DetailsSegment />
+          <DetailsSegment
+            status={status}
+            businessType={businessType}
+            businessLocation={businessLocation}
+          />
         </div>
       </div>
     </div>
