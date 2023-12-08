@@ -9,7 +9,7 @@ import Header from "@/components/header";
 import { RestaurantJson } from "@/lib/types";
 
 export default function AppPage() {
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(true);
   const [json, setJson] = useState<RestaurantJson | null>(null);
 
   return (
