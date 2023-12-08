@@ -5,6 +5,7 @@ import { FormSegment } from "@/components/form-segment";
 import { MapSegment } from "@/components/map-segment";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import Header from "@/components/header";
 
 export default function LayoutPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -18,7 +19,7 @@ export default function LayoutPage() {
     >
       <div
         className={cn(
-          "absolute left-0 right-0 grid place-items-center transition-all duration-1000 z-10 bg-background text-foreground",
+          "absolute left-0 right-0 grid place-items-center transition-all duration-1000 z-10 bg-gradient-to-tl from-bkkPurple to-bkkPink text-foreground",
           { "top-0 bottom-0": !submitted, "-top-full bottom-full": submitted },
         )}
       >
@@ -31,7 +32,8 @@ export default function LayoutPage() {
 
       <div className="ml-0 lg:ml-[50%] h-full">
         <div className="h-[75vh] lg:h-0" />
-        <div className="min-h-[25vh] lg:text-left lg:min-h-full p-6">
+        <div className="min-h-[25vh] lg:text-left lg:min-h-full p-3 bg-gradient-to-tl from-bkkPurple to-bkkPink">
+          <Header submitted={submitted} />
           <DetailsSegment />
         </div>
       </div>
