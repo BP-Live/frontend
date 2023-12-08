@@ -82,12 +82,12 @@ export function FormSegment({
       );
     } else {
       toast({
-        title: "Your fucking browser",
+        title: "Error with browser",
         description: "Geolocation is not supported by your browser.",
       });
     }
 
-    const ws = new WebSocket("ws://localhost:8000/ws");
+    const ws = new WebSocket(`${process.env.NEXT_PUBLIC_BACKEND_WS}/ws`);
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
