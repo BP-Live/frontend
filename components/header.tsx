@@ -15,9 +15,9 @@ export default function Header({ submitted }: { submitted: boolean }) {
 
   return (
     <div
-      className={`relative top-0 w-full ${
-        submitted ? "top-[75%]" : "top-[0%]"
-      } lg:top-[0%] py-2 px-2 flex items-center justify-end z-40`}
+      className={`top-0 ${
+        submitted ? "w-full relative top-[75%]" : "w-[97%] absolute top-[0%]"
+      } lg:top-[0%] lg:w-full lg:relative py-2 px-2 flex items-center justify-end z-40`}
     >
       <Image
         src={LogoutIcon}
