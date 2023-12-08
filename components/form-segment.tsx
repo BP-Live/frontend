@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { sendPromptAPI } from "@/app/api";
 import { RestaurantJson } from "@/lib/types";
+import { es } from "date-fns/locale";
 
 const formSchema = z.object({
   prompt: z.string().min(10, {
@@ -51,13 +52,16 @@ export function FormSegment({
 
           const ws = new WebSocket(`${process.env.NEXT_PUBLIC_BACKEND_WS}/ws`);
 
-          ws.send(
-            JSON.stringify({
-              longitude,
-              latitude,
-              prompt: values.prompt,
-            }),
-          );
+          ws.onopen = () => {
+            console.log("connected");
+            ws.send(
+              JSON.stringify({
+                longitude,
+                latitude,
+                prompt: values.prompt,
+              }),
+            );
+          };
 
           ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
