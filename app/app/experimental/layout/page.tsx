@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { cn } from "@/lib/utils";
 import { DetailsSegment } from "@/components/details-segment";
 import { FormSegment } from "@/components/form-segment";
 import { MapSegment } from "@/components/map-segment";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 export default function LayoutPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -25,13 +25,13 @@ export default function LayoutPage() {
         <FormSegment setSubmitted={setSubmitted} />
       </div>
 
-      <div className="w-full fixed top-0 left-0 bottom-[25vh] grid place-items-center -z-10">
+      <div className="fixed top-0 left-0 right-0 lg:right-1/2 bottom-[25vh] lg:bottom-0 grid place-items-center -z-10">
         <MapSegment />
       </div>
 
-      <div>
-        <div className="h-[75vh]" />
-        <div className="text-center min-h-[25vh]">
+      <div className="ml-0 lg:ml-[50%] h-full">
+        <div className="h-[75vh] lg:h-0" />
+        <div className="min-h-[25vh] lg:text-left lg:min-h-full p-6">
           <DetailsSegment />
         </div>
       </div>
