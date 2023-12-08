@@ -49,7 +49,21 @@ export function FormSegment({
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
 
-          await sendPromptAPI(longitude, latitude, values.prompt);
+          const ws = new WebSocket(`${process.env.NEXT_PUBLIC_BACKEND_WS}/ws`);
+
+          ws.send(
+            JSON.stringify({
+              longitude,
+              latitude,
+              prompt: values.prompt,
+            }),
+          );
+
+          ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+
+            setJson((json) => ({ ...json, ...data }));
+          };
         },
         (error) => {
           switch (error.code) {
@@ -86,14 +100,6 @@ export function FormSegment({
         description: "Geolocation is not supported by your browser.",
       });
     }
-
-    const ws = new WebSocket(`${process.env.NEXT_PUBLIC_BACKEND_WS}/ws`);
-
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-
-      setJson((json) => ({ ...json, ...data }));
-    };
   };
 
   return (
