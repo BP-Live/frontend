@@ -6,10 +6,12 @@ export function DetailsSegment({
   status,
   businessType,
   businessLocation,
+  json,
 }: {
   status: number;
   businessType: string;
   businessLocation: string;
+  json: {};
 }) {
   return (
     <div className="flex flex-col w-full justify-center items-center">
@@ -21,7 +23,7 @@ export function DetailsSegment({
           <p className="text-xl font-bold text-center text-white -mt-1">
             Status
           </p>
-          <Progress value={status} className="w-1/2" />
+          <Progress value={json.progress} className="w-1/2" />
         </div>
         <div className="flex flex-row w-full justify-center items-center gap-3 border-2 border-white rounded-xl p-2">
           <p className="text-xl font-bold text-center text-white">

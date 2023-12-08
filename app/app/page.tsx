@@ -11,6 +11,10 @@ export default function AppPage() {
   const [submitted, setSubmitted] = useState(false);
   const [json, setJson] = useState({});
 
+  useEffect(() => {
+    console.log(json);
+  }, [json]);
+
   const businessType = "Grocery business";
   const businessLocation = "Random street 43. Budapest, Hungary";
   const status = 20;
@@ -43,6 +47,7 @@ export default function AppPage() {
             status={status}
             businessType={businessType}
             businessLocation={businessLocation}
+            json={json}
           />
         </div>
       </div>
