@@ -21,18 +21,18 @@ export default function AppPage() {
     >
       <div
         className={cn(
-          "absolute left-0 right-0 grid place-items-center transition-all duration-1000 z-10 bg-gradient-to-tl from-bkkPurple to-bkkPink text-foreground",
+          "absolute left-0 right-0 grid place-items-center transition-all duration-1000 z-20 bg-gradient-to-tl from-bkkPurple to-bkkPink text-foreground",
           { "top-0 bottom-0": !submitted, "-top-full bottom-full": submitted },
         )}
       >
         <FormSegment setSubmitted={setSubmitted} setJson={setJson} />
       </div>
 
-      <div className="fixed top-0 left-0 right-0 lg:right-1/2 bottom-[25vh] lg:bottom-0 grid place-items-center -z-10">
+      <div className="fixed top-0 left-0 right-0 lg:right-1/2 bottom-[25vh] lg:bottom-0 grid place-items-center">
         <MapSegment />
       </div>
 
-      <div className="ml-0 lg:ml-[50%] h-full">
+      <div className="ml-0 lg:ml-[50%] h-full z-10">
         <div className="h-[75vh] lg:h-0" />
         <div className="min-h-[25vh] lg:text-left lg:min-h-full p-3 bg-gradient-to-tl from-bkkPurple to-bkkPink">
           <Header submitted={submitted} />
