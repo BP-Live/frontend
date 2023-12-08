@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { sendPromptAPI } from "@/app/api";
 import { RestaurantJson } from "@/lib/types";
 import { es } from "date-fns/locale";
 
