@@ -2,10 +2,20 @@
 
 import { Button } from "@/components/ui/button";
 import { googleAuthAPI } from "../api";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function HomePage() {
+  const { toast } = useToast();
+
   const handleGoogleLogin = async () => {
-    await googleAuthAPI();
+    try {
+      await googleAuthAPI();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error as string,
+      });
+    }
   };
 
   return (
