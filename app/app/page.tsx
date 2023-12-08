@@ -32,7 +32,7 @@ export default function AppPage() {
         <MapSegment />
       </div>
 
-      {submitted && (
+      {submitted ? (
         <div className="absolute top-0 left-0 lg:left-1/2 right-0 bottom-0 z-10 pointer-events-none">
           <div className="h-[75vh] lg:h-0" />
           <div className="min-h-[25vh] lg:text-left lg:min-h-full p-3 bg-gradient-to-tl from-bkkPurple to-bkkPink">
@@ -40,6 +40,8 @@ export default function AppPage() {
             <DetailsSegment json={json} />
           </div>
         </div>
+      ) : (
+        <Header submitted={submitted} />
       )}
     </div>
   );
