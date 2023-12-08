@@ -54,16 +54,6 @@ function MapElement() {
       scene.add(gltf.scene);
 
       let { tilt, heading, zoom } = cameraOptions;
-
-      const animate = () => {
-        heading += 0.2;
-
-        map.moveCamera({ tilt, heading, zoom });
-
-        requestAnimationFrame(animate);
-      };
-
-      requestAnimationFrame(animate);
     });
 
     new ThreeJSOverlayView({
@@ -88,8 +78,6 @@ const mapOptions = {
   mapId: process.env.NEXT_PUBLIC_MAP_ID,
   disableDefaultUI: true,
   disableDoubleClickZoom: true,
-  gestureHandling: "none",
-  keyboardShortcuts: false,
 };
 
 async function getMapAsync(ref: HTMLElement): Promise<google.maps.Map> {
