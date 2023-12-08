@@ -6,7 +6,11 @@ import { logoutAPI } from "@/app/api";
 export default function Header({ submitted }: { submitted: boolean }) {
   const handleLogout = async () => {
     await logoutAPI();
-    window.location.href = "/";
+
+    const rootUrl = process.env.NEXT_PUBLIC_ROOT_DOMAIN as string;
+    window.location.href = rootUrl.startsWith("https")
+      ? rootUrl
+      : `https://${rootUrl}`;
   };
 
   return (
