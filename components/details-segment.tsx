@@ -29,7 +29,7 @@ export function DetailsSegment({ json }: { json: RestaurantJson | null }) {
             Business location:
           </h2>
           <h3 className="text-lg text-center text-white">
-            {json?.metadata?.location}
+            {JSON.stringify(json?.metadata?.location || {})}
           </h3>
         </div>
       </div>
