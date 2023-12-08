@@ -18,7 +18,7 @@ export default function LayoutPage() {
     >
       <div
         className={cn(
-          "absolute left-0 right-0 grid place-items-center transition-all duration-1000 z-10 bg-primary text-primary-foreground",
+          "absolute left-0 right-0 grid place-items-center transition-all duration-1000 z-10 bg-background text-foreground",
           { "top-0 bottom-0": !submitted, "-top-full bottom-full": submitted },
         )}
       >
