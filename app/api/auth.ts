@@ -8,8 +8,6 @@ export async function googleAuthAPI() {
 
     return data;
   } catch (error) {
-    console.error(error);
-
     return error;
   }
 }
@@ -22,8 +20,6 @@ export async function logoutAPI() {
 
     return data;
   } catch (error) {
-    console.error(error);
-
     return error;
   }
 }
@@ -36,8 +32,6 @@ export async function getMeAPI() {
 
     return data;
   } catch (error) {
-    console.error(error);
-
     return error;
   }
 }
