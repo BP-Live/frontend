@@ -14,6 +14,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
+import { sendPromptAPI } from "@/app/api";
 
 const formSchema = z.object({
   prompt: z.string().min(10, {
@@ -26,6 +28,8 @@ export function FormSegment({
 }: {
   setSubmitted: Dispatch<SetStateAction<boolean>>;
 }) {
+  const { toast } = useToast();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -33,10 +37,53 @@ export function FormSegment({
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     setSubmitted(true);
-  }
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+
+          await sendPromptAPI(longitude, latitude, values.prompt);
+        },
+        (error) => {
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              toast({
+                title: "Permission Error",
+                description: "User denied the request for geolocation.",
+              });
+              break;
+            case error.POSITION_UNAVAILABLE:
+              toast({
+                title: "Position Unavailable",
+                description: "Location information is unavailable.",
+              });
+              break;
+            case error.TIMEOUT:
+              toast({
+                title: "Timeout Error",
+                description: "The request to get user location timed out.",
+              });
+              break;
+            default:
+              toast({
+                title: "Unknown Error",
+                description: "An unknown error occurred.",
+              });
+              break;
+          }
+        },
+      );
+    } else {
+      toast({
+        title: "Your fucking browser",
+        description: "Geolocation is not supported by your browser.",
+      });
+    }
+  };
 
   return (
     <div className="flex items-center justify-center flex-col w-full min-h-[100vh]">
@@ -46,7 +93,7 @@ export function FormSegment({
         </h1>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-8 w-[20rem] md:w-[30rem]"
           >
             <FormField

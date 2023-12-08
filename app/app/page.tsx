@@ -1,71 +1,40 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
-
-const formSchema = z.object({
-  prompt: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-});
+import { DetailsSegment } from "@/components/details-segment";
+import { FormSegment } from "@/components/form-segment";
+import { MapSegment } from "@/components/map-segment";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import Header from "@/components/header";
 
 export default function AppPage() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      prompt: "",
-    },
-  });
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  const [submitted, setSubmitted] = useState(false);
 
   return (
-    <div className="flex items-center justify-center flex-col w-full min-h-[100vh]">
-      <div className="flex flex-col items-center justify-center">
-        <div className="p-3 lg:p-6 px-3 lg:px-10 border-2 border-border flex items-center justify-center flex-col rounded-lg">
-          <h1 className="text-xl lg:text-2xl font-caption mb-5 text-center">
-            Describe your property needs
-          </h1>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-8 w-full"
-            >
-              <FormField
-                control={form.control}
-                name="prompt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Textarea
-                        placeholder="shadcn"
-                        className="min-h-[40vh]"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex w-full justify-center items-center">
-                <Button type="submit" size={"lg"}>
-                  Submit your request
-                </Button>
-              </div>
-            </form>
-          </Form>
+    <div
+      className={cn("h-full", {
+        "overflow-hidden": !submitted,
+        "overflow-auto": submitted,
+      })}
+    >
+      <div
+        className={cn(
+          "absolute left-0 right-0 grid place-items-center transition-all duration-1000 z-10 bg-gradient-to-tl from-bkkPurple to-bkkPink text-foreground",
+          { "top-0 bottom-0": !submitted, "-top-full bottom-full": submitted },
+        )}
+      >
+        <FormSegment setSubmitted={setSubmitted} />
+      </div>
+
+      <div className="fixed top-0 left-0 right-0 lg:right-1/2 bottom-[25vh] lg:bottom-0 grid place-items-center -z-10">
+        <MapSegment />
+      </div>
+
+      <div className="ml-0 lg:ml-[50%] h-full">
+        <div className="h-[75vh] lg:h-0" />
+        <div className="min-h-[25vh] lg:text-left lg:min-h-full p-3 bg-gradient-to-tl from-bkkPurple to-bkkPink">
+          <Header submitted={submitted} />
+          <DetailsSegment />
         </div>
       </div>
     </div>
