@@ -9,7 +9,7 @@ export function DetailsSegment({ json }: { json: RestaurantJson | null }) {
       <h1 className="text-4xl font-bold my-3 text-center text-white">
         Config panel
       </h1>
-      <div className="flex flex-col w-full justify-center items-center gap-4 mt-7">
+      <div className="flex flex-col w-[10/12] lg:w-3/4 justify-center items-center gap-4 mt-7">
         <div className="flex flex-row w-full justify-center items-center gap-3 p-2">
           <p className="text-xl font-bold text-center text-white -mt-1">
             Status
