@@ -23,7 +23,11 @@ export default function HomePage() {
   return (
     <div className="flex flex-col w-full justify-center items-center">
       <div className="flex w-full min-h-[100vh] items-center justify-center gap-16 flex-col lg:justify-around lg:flex-row lg:gap-0">
-        <Image src={BKLiveImage} width={300} height={300} alt="Budapest Live" />
+        <Image
+          src={BKLiveImage}
+          alt="Budapest Live"
+          className="w-64 h-64 lg:w-72 lg:h-72"
+        />
 
         <div className="flex items-center justify-center flex-col">
           <h1 className="text-5xl font-bold font-caption mb-3 text-center">
