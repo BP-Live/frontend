@@ -23,10 +23,6 @@ export function MapSegment() {
   );
 }
 
-function getRelativePosition(x, y) {
-  return { x: cameraOptions.center.lat - x, y: cameraOptions.center.lng - y };
-}
-
 // meters per degree
 const mDegLat = 111000;
 
@@ -96,7 +92,7 @@ function MapElement() {
       requestAnimationFrame(animate);
     });
 
-    let markers = [];
+    let markers: any[] = [];
 
     setInterval(() => {
       let busReq = fetchStuff().then((data) => {
