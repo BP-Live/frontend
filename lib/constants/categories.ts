@@ -34,7 +34,7 @@ export const categories: BusinessCategorie[] = [
     category: "Grocery or supermarket",
   },
   {
-    id: "Post office",
-    category: "Post office",
+    id: "Post Office",
+    category: "Post Office",
   },
 ];
