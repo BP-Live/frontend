@@ -76,6 +76,10 @@ export default function AppPage() {
   const [json, setJson] = useState<RestaurantJson | null>(null);
 
   useEffect(() => {
+    console.log(json);
+  }, [json]);
+
+  useEffect(() => {
     setLocationDialog(true);
 
     setLocationLoading(true);
