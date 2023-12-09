@@ -11,7 +11,7 @@ import * as Dialog from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import * as Table from "@/components/ui/table";
 import * as Form from "@/components/ui/form";
-import { RestaurantJson } from "@/lib/types";
+import { BusinessCategorie, RestaurantJson } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTheme } from "next-themes";
@@ -22,6 +22,92 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import BusinessIcon from "../../public/business.png";
 import AvailablePlaceIcon from "../../public/open.png";
+
+import * as Checkbox from "@/components/ui/checkbox";
+
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+
+const data: BusinessCategorie[] = [
+  {
+    id: "Metro Station",
+    category: "Metro Station",
+  },
+  {
+    id: "Train Station",
+    category: "Train Station",
+  },
+  {
+    id: "Park",
+    category: "Park",
+  },
+  {
+    id: "Restaurant",
+    category: "Restaurant",
+  },
+  {
+    id: "Night Club",
+    category: "Night Club",
+  },
+  {
+    id: "ATM",
+    category: "ATM",
+  },
+  {
+    id: "Cafe",
+    category: "Cafe",
+  },
+  {
+    id: "Grocery or supermarket",
+    category: "Grocery or supermarket",
+  },
+  {
+    id: "Post office",
+    category: "Post office",
+  },
+];
+
+export const columns: ColumnDef<BusinessCategorie>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox.Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox.Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "category",
+    header: "All",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("category")}</div>
+    ),
+  },
+];
 
 const promptSchema = z.object({
   prompt: z.string().min(10, {
@@ -44,7 +130,43 @@ export default function AppPage() {
   const [promptLoading, setPromptLoading] = useState(false);
   const [promptDialog, setPromptDialog] = useState(false);
 
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
+
   const [json, setJson] = useState<RestaurantJson | null>(null);
+
+  const [selectionArray, setSelectionArray] = useState<string[]>([]);
+
+  useEffect(() => {
+    const selectedCategories = data
+      .filter((_, index) => {
+        return Object.keys(rowSelection).includes(index.toString());
+      })
+      .map((item) => item.category);
+
+    setSelectionArray(selectedCategories);
+  }, [rowSelection]);
+
+  const table = useReactTable({
+    data,
+    columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+    },
+  });
 
   const form = useForm<z.infer<typeof promptSchema>>({
     resolver: zodResolver(promptSchema),
@@ -151,10 +273,10 @@ export default function AppPage() {
   return (
     <>
       <div className="fixed top-0 left-0 bottom-1/4 lg:bottom-0 right-0 lg:right-1/3">
-        <MapSegment json={json} />
+        <MapSegment json={json} categories={selectionArray} />
       </div>
 
-      <div className="fixed bottom-2 left-2 z-10 flex items-center gap-3">
+      <div className="fixed bottom-6 left-6 z-10 flex items-center gap-3">
         <div className="w-[10rem] h-[9rem] bg-white rounded-lg flex flex-col items-center justify-start pt-2">
           <p className="font-bold text-primary text-center">Labels</p>
           <div className="flex items-center justify-between w-full px-3 mt-3">
@@ -202,6 +324,64 @@ export default function AppPage() {
           <span className="sr-only">Sign Out</span>
           <ExitIcon className="h-[1.2rem] w-[1.2rem]" />
         </Button>
+
+        <Dropdown.DropdownMenu>
+          <Dropdown.DropdownMenuTrigger asChild>
+            <Button>Select Categories</Button>
+          </Dropdown.DropdownMenuTrigger>
+          <Dropdown.DropdownMenuContent className="w-56 mt-4" align="center">
+            <div className="rounded-md ">
+              <Table.Table>
+                <Table.TableHeader>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <Table.TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <Table.TableHead key={header.id}>
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext(),
+                                )}
+                          </Table.TableHead>
+                        );
+                      })}
+                    </Table.TableRow>
+                  ))}
+                </Table.TableHeader>
+                <Table.TableBody>
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) => (
+                      <Table.TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <Table.TableCell key={cell.id}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </Table.TableCell>
+                        ))}
+                      </Table.TableRow>
+                    ))
+                  ) : (
+                    <Table.TableRow>
+                      <Table.TableCell
+                        colSpan={columns.length}
+                        className="h-24 text-center"
+                      >
+                        No results.
+                      </Table.TableCell>
+                    </Table.TableRow>
+                  )}
+                </Table.TableBody>
+              </Table.Table>
+            </div>
+          </Dropdown.DropdownMenuContent>
+        </Dropdown.DropdownMenu>
       </div>
 
       <div

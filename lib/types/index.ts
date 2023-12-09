@@ -32,7 +32,7 @@ export type BusinessHeatmap = {
   [key: string]: [[number, number, string, number]];
 };
 
-export type BusinessCategories = {
+export type BusinessCategorie = {
   id: string;
   category: string;
 };

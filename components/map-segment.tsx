@@ -10,19 +10,31 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { ThreeJSOverlayView } from "@googlemaps/three";
 import axios from "@/lib/config/axios";
 import { setInterval } from "timers";
-import { RestaurantJson } from "@/lib/types";
+import { BusinessCategorie, RestaurantJson } from "@/lib/types";
 
 import heatmapData from "@/public/business_heatmap.json";
 
-export function MapSegment({ json }: { json: RestaurantJson | null }) {
+export function MapSegment({
+  json,
+  categories,
+}: {
+  json: RestaurantJson | null;
+  categories: string[];
+}) {
   return (
     <Wrapper apiKey={process.env.NEXT_PUBLIC_MAP_API_KEY!}>
-      <MapElement json={json} />
+      <MapElement json={json} categories={categories} />
     </Wrapper>
   );
 }
 
-function MapElement({ json }: { json: RestaurantJson | null }) {
+function MapElement({
+  json,
+  categories,
+}: {
+  json: RestaurantJson | null;
+  categories: string[];
+}) {
   const mapRef = useRef<HTMLDivElement | null>(null);
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
