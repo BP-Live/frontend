@@ -63,3 +63,12 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+.hideScrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hideScrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

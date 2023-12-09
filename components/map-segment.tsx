@@ -77,30 +77,33 @@ function MapElement({
       });
     });
 
-    json.premises?.forEach((premise: any) => {
-      let marker = new google.maps.Marker({
-        position: { lat: premise.lat, lng: premise.lng },
-        label: premise.name,
-        icon: {
-          url: "/open.png",
-          anchor: new google.maps.Point(16, 16),
-          scaledSize: new google.maps.Size(32, 32),
-        },
-        map,
-      });
+    json.premises?.forEach(
+      (premise: any) => {
+        let marker = new google.maps.Marker({
+          position: { lat: premise.lat, lng: premise.lng },
+          label: premise.name,
+          icon: {
+            url: "/open.png",
+            anchor: new google.maps.Point(16, 16),
+            scaledSize: new google.maps.Size(32, 32),
+          },
+          map,
+        });
 
-      marker.addListener("click", () => {
-        infoWindow.close();
-        infoWindow.setContent(
-          `<div><h3>${premise.address}</h3><p>Store area: ${premise.area} m2</p></div>`
-        );
-        infoWindow.open(map, marker);
-      });
+        marker.addListener("click", () => {
+          infoWindow.close();
+          infoWindow.setContent(
+            `<div><h3>${premise.address}</h3><p>Store area: ${premise.area} m2</p></div>`,
+          );
+          infoWindow.open(map, marker);
+        });
 
-      map?.moveCamera({
-        center: { lat: loc.lat, lng: loc.lng },
-      });
-    }, [json]);
+        map?.moveCamera({
+          center: { lat: loc.lat, lng: loc.lng },
+        });
+      },
+      [json],
+    );
   });
 
   useEffect(() => {

@@ -394,7 +394,7 @@ export default function AppPage() {
         </div>
         {json && (
           <div className="h-full flex flex-col gap-6 lg:gap-2">
-            <div className="h-[100%] flex flex-col justify-start overflow-y-auto relative">
+            <div className="h-[100%] flex flex-col justify-start overflow-y-auto relative hideScrollbar">
               <div className="w-full flex items-center gap-2">
                 <Progress value={json.progress || 0} />
                 <p className="-mt-[2px] font-bold text-primary whitespace-nowrap">
