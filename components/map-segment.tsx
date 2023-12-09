@@ -14,6 +14,7 @@ import { BusinessCategorie, RestaurantJson } from "@/lib/types";
 
 import heatmapData from "@/public/business_heatmap.json";
 import { info } from "console";
+import { useTheme } from "next-themes";
 
 export function MapSegment({
   json,
@@ -22,9 +23,11 @@ export function MapSegment({
   json: RestaurantJson | null;
   categories: string[];
 }) {
+  const { theme } = useTheme();
+
   return (
     <Wrapper apiKey={process.env.NEXT_PUBLIC_MAP_API_KEY!}>
-      <MapElement json={json} categories={categories} />
+      <MapElement json={json} categories={categories} theme={theme} />
     </Wrapper>
   );
 }
@@ -32,9 +35,11 @@ export function MapSegment({
 function MapElement({
   json,
   categories,
+  theme,
 }: {
   json: RestaurantJson | null;
   categories: string[];
+  theme: string | undefined;
 }) {
   const mapRef = useRef<HTMLDivElement | null>(null);
 
@@ -45,8 +50,8 @@ function MapElement({
   useEffect(() => {
     if (!mapRef.current) return;
 
-    getMapAsync(mapRef.current).then((map) => setMap(map));
-  }, []);
+    getMapAsync(mapRef.current, theme).then((map) => setMap(map));
+  }, [theme]);
 
   const infoWindow = new google.maps.InfoWindow();
 
@@ -151,16 +156,16 @@ function MapElement({
       requestAnimationFrame(animate);
     });
 
-    let markers: google.maps.Rectangle[] = [];
-    /*
+    let markers: google.maps.Circle[] = [];
+
     setInterval(() => {
       asyncCall().then((data) => {
         markers.forEach((marker: google.maps.Circle) => {
           marker.setMap(null);
         });
- 
+
         //data = data.slice(0, 10);
- 
+
         data.forEach((bus: any) => {
           markers.push(
             new google.maps.Circle({
@@ -171,17 +176,12 @@ function MapElement({
               fillOpacity: 0.35,
               map,
               center: { lat: bus.latitude, lng: bus.longitude },
-              radius: 10,
-            })
-          )
+              radius: 7.5,
+            }),
+          );
         });
       });
     }, 10000);
-    */
-    // import /business_heatmap.json
-    // @ts-ignore
-
-    //requestAnimationFrame(animate);
 
     new ThreeJSOverlayView({
       map,
@@ -190,7 +190,6 @@ function MapElement({
       anchor: { ...cameraOptions.center, altitude: 0 },
     });
   }, [map]);
-
 
   useEffect(() => {
     console.log(categories);
@@ -201,7 +200,7 @@ function MapElement({
       rect.setMap(null);
     });
 
-    setCircles([])
+    setCircles([]);
 
     //rectangels = [];
 
@@ -210,7 +209,7 @@ function MapElement({
       const data = (heatmapData as any)[key];
       data.forEach((dot: any) => {
         if (dot[3] == 0) return;
-        setCircles(prevRectangles => {
+        setCircles((prevRectangles) => {
           prevRectangles.push(
             new google.maps.Circle({
               strokeColor: dot[2],
@@ -221,8 +220,8 @@ function MapElement({
               map,
               center: { lat: dot[0], lng: dot[1] },
               radius: 300,
-            })
-          )
+            }),
+          );
 
           return prevRectangles;
         });
@@ -241,18 +240,23 @@ const cameraOptions = {
   zoom: 17.5,
 };
 
-const mapOptions = {
-  mapId: process.env.NEXT_PUBLIC_MAP_ID,
-  disableDefaultUI: true,
-  disableDoubleClickZoom: true,
-};
-
-async function getMapAsync(ref: HTMLElement): Promise<google.maps.Map> {
+async function getMapAsync(
+  ref: HTMLElement,
+  theme: string | undefined,
+): Promise<google.maps.Map> {
   const { Map } = (await google.maps.importLibrary(
     "maps",
   )) as google.maps.MapsLibrary;
 
-  const map = new Map(ref, { ...cameraOptions, ...mapOptions });
+  const map = new Map(ref, {
+    ...cameraOptions,
+    mapId:
+      theme === "light"
+        ? process.env.NEXT_PUBLIC_MAP_ID
+        : process.env.NEXT_PUBLIC_MAP_ID_MN,
+    disableDefaultUI: true,
+    disableDoubleClickZoom: true,
+  });
 
   return map;
 }
