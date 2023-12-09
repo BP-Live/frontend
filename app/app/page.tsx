@@ -1,7 +1,9 @@
 "use client";
 
+import { getLocation, saveLocation } from "@/lib/utils/storage";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import * as Dropdown from "@/components/ui/dropdown-menu";
+import { LogoutButton } from "@/components/logout-button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MapSegment } from "@/components/map-segment";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,9 +17,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTheme } from "next-themes";
 import * as z from "zod";
-import LogoutButton from "@/components/logout-button";
-import { getLocation, saveLocation } from "@/lib/utils/storage";
-import { Buda } from "next/font/google";
 
 const promptSchema = z.object({
   prompt: z.string().min(2, {

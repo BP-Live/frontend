@@ -3,7 +3,7 @@ import Image from "next/image";
 import LogoutIcon from "@/assets/images/logout_black.png";
 import { logoutAPI } from "@/app/api";
 
-export default function LogoutButton() {
+export function LogoutButton() {
   const handleLogout = async () => {
     await logoutAPI();
 
