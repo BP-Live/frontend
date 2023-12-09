@@ -3,7 +3,7 @@
 import { DetailsSegment } from "@/components/details-segment";
 import { FormSegment } from "@/components/form-segment";
 import { MapSegment } from "@/components/map-segment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header";
 import { RestaurantJson } from "@/lib/types";
@@ -11,6 +11,10 @@ import { RestaurantJson } from "@/lib/types";
 export default function AppPage() {
   const [submitted, setSubmitted] = useState(true);
   const [json, setJson] = useState<RestaurantJson | null>(null);
+
+  useEffect(() => {
+    console.log(json);
+  }, [json]);
 
   return (
     <div
@@ -32,13 +36,17 @@ export default function AppPage() {
         <MapSegment />
       </div>
 
-      <div className="ml-0 lg:ml-[50%] h-full z-10">
-        <div className="h-[75vh] lg:h-0" />
-        <div className="min-h-[25vh] lg:text-left lg:min-h-full p-3 bg-gradient-to-tl from-bkkPurple to-bkkPink">
-          <Header submitted={submitted} />
-          <DetailsSegment json={json} />
+      {submitted ? (
+        <div className="absolute top-0 left-0 lg:left-1/2 right-0 bottom-0 z-10 pointer-events-none">
+          <div className="h-[75vh] lg:h-0" />
+          <div className="min-h-[25vh] lg:text-left lg:min-h-full p-3 bg-gradient-to-tl from-bkkPurple to-bkkPink">
+            <Header submitted={submitted} />
+            <DetailsSegment json={json} />
+          </div>
         </div>
-      </div>
+      ) : (
+        <Header submitted={submitted} />
+      )}
     </div>
   );
 }
