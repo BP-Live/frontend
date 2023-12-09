@@ -22,7 +22,7 @@ export const getLocation = (): Location | null => {
   const currentTime = new Date().getTime();
 
   // Check if the data is older than 15 minutes (900000 milliseconds)
-  if (currentTime - parsedData.timestamp > 900000) {
+  if (currentTime - parsedData.timestamp > 3600000) {
     localStorage.removeItem("userLocation");
     return null;
   }

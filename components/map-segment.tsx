@@ -39,16 +39,36 @@ function MapElement({ json }: { json: RestaurantJson | null }) {
     new google.maps.Marker({
       position: { lat: loc.lat, lng: loc.lng },
       label: json.metadata?.name,
-      icon: "/business2.png",
+      icon: {
+        url: "/business.png",
+        anchor: new google.maps.Point(20, 20),
+        scaledSize: new google.maps.Size(40, 40),
+      },
       map,
     });
 
     json.competitors?.forEach((comp: any) => {
-      console.log(comp, "kompetitor");
       new google.maps.Marker({
         position: { lat: comp.lat, lng: comp.lng },
         label: comp.name,
-        icon: "/business2.png",
+        icon: {
+          url: "/business.png",
+          anchor: new google.maps.Point(16, 16),
+          scaledSize: new google.maps.Size(32, 32),
+        },
+        map,
+      });
+    });
+
+    json.premises?.forEach((premise: any) => {
+      new google.maps.Marker({
+        position: { lat: premise.lat, lng: premise.lng },
+        label: premise.name,
+        icon: {
+          url: "/open.png",
+          anchor: new google.maps.Point(16, 16),
+          scaledSize: new google.maps.Size(32, 32),
+        },
         map,
       });
     });
@@ -115,7 +135,12 @@ function MapElement({ json }: { json: RestaurantJson | null }) {
           markers.push(
             new google.maps.Marker({
               position: { lat: bus.latitude, lng: bus.longitude },
-              icon: "/bus2.png",
+              icon: {
+                url: "/bus2.png",
+                anchor: new google.maps.Point(16, 16),
+                scaledSize: new google.maps.Size(32, 32),
+              },
+
               //label: bus.vehicle_label,
               //optimized: true,
               map,

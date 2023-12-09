@@ -1,7 +1,7 @@
 "use client";
 
 import { getLocation, saveLocation } from "@/lib/utils/storage";
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import { ExitIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import * as Dropdown from "@/components/ui/dropdown-menu";
 import { LogoutButton } from "@/components/logout-button";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +17,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTheme } from "next-themes";
 import * as z from "zod";
+import { logoutAPI } from "../api";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 const promptSchema = z.object({
   prompt: z.string().min(10, {
@@ -28,6 +31,7 @@ const BUDAPEST = [47.497913, 19.040236];
 
 export default function AppPage() {
   const { setTheme } = useTheme();
+  const router = useRouter();
 
   const [[latitude, longitude], setLocation] = useState(BUDAPEST);
 
@@ -133,13 +137,22 @@ export default function AppPage() {
     }
   };
 
+  const handleLogout = async () => {
+    await logoutAPI();
+
+    const rootUrl = process.env.NEXT_PUBLIC_ROOT_DOMAIN as string;
+    window.location.href = rootUrl.startsWith("https")
+      ? rootUrl
+      : `https://${rootUrl}`;
+  };
+
   return (
     <>
-      <div className="fixed top-0 left-0 bottom-1/2 lg:bottom-0 right-0 md:right-1/2">
+      <div className="fixed top-0 left-0 bottom-1/4 lg:bottom-0 right-0 lg:right-1/2">
         <MapSegment json={json} />
       </div>
 
-      <div className="absolute top-6 left-6 z-10 flex items-center gap-4">
+      <div className="fixed top-6 left-6 z-10 flex items-center gap-3">
         <Dropdown.DropdownMenu>
           <Dropdown.DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon">
@@ -160,104 +173,120 @@ export default function AppPage() {
             </Dropdown.DropdownMenuItem>
           </Dropdown.DropdownMenuContent>
         </Dropdown.DropdownMenu>
-        <LogoutButton />
+
+        <Button variant="secondary" size="icon" onClick={handleLogout}>
+          <span className="sr-only">Sign Out</span>
+          <ExitIcon className="h-[1.2rem] w-[1.2rem]" />
+        </Button>
       </div>
 
-      <div className="absolute top-1/2 lg:top-0 left-0 lg:left-1/2 bottom-0 right-0 p-6 flex flex-col justify-center">
+      <div
+        className={cn(
+          "absolute top-3/4 lg:top-0 left-0 lg:left-1/2 bottom-0 right-0 p-6 flex flex-col justify-center z-20  bg-background",
+          {
+            "min-h-screen": json,
+            "min-h-0": !json,
+          },
+        )}
+      >
         {json && (
           <div className="h-full flex flex-col justify-between">
-            <div className="w-full flex items-center gap-2 ">
-              <Progress value={json.progress || 0} />
-              <p className="font-bold text-primary whitespace-nowrap">
-                {json.progress} %
-              </p>
-            </div>
+            <div className="h-full flex flex-col justify-start">
+              <div className="w-full flex items-center gap-2">
+                <Progress value={json.progress || 0} />
+                <p className="-mt-[2px] font-bold text-primary whitespace-nowrap">
+                  {json.progress} %
+                </p>
+              </div>
 
-            <Table.Table>
-              <Table.TableHeader>
-                <Table.TableRow>
-                  <Table.TableHead className="text-center" colSpan={2}>
-                    Details
-                  </Table.TableHead>
-                </Table.TableRow>
-              </Table.TableHeader>
-              <Table.TableBody>
-                <Table.TableRow>
-                  <Table.TableCell>Type</Table.TableCell>
-                  <Table.TableCell>{json.metadata?.type}</Table.TableCell>
-                </Table.TableRow>
-                <Table.TableRow>
-                  <Table.TableCell>Name</Table.TableCell>
-                  <Table.TableCell>{json.metadata?.name}</Table.TableCell>
-                </Table.TableRow>
-                <Table.TableRow>
-                  <Table.TableCell>Location</Table.TableCell>
-                  <Table.TableCell>
-                    {JSON.stringify(json.metadata?.location || {})}
-                  </Table.TableCell>
-                </Table.TableRow>
-              </Table.TableBody>
-            </Table.Table>
-
-            <Table.Table>
-              <Table.TableHeader>
-                <Table.TableRow>
-                  <Table.TableHead className="text-center">
-                    Pros
-                  </Table.TableHead>
-                </Table.TableRow>
-              </Table.TableHeader>
-              <Table.TableBody>
-                {json.pros?.map((pro) => (
-                  <Table.TableRow key={pro}>
-                    <Table.TableCell>{pro}</Table.TableCell>
+              <Table.Table className="">
+                <Table.TableHeader>
+                  <Table.TableRow>
+                    <Table.TableHead className="text-center" colSpan={2}>
+                      Details
+                    </Table.TableHead>
                   </Table.TableRow>
-                ))}
-              </Table.TableBody>
-            </Table.Table>
-
-            <Table.Table>
-              <Table.TableHeader>
-                <Table.TableRow>
-                  <Table.TableHead className="text-center">
-                    Cons
-                  </Table.TableHead>
-                </Table.TableRow>
-              </Table.TableHeader>
-              <Table.TableBody>
-                {json.cons?.map((pro) => (
-                  <Table.TableRow key={pro}>
-                    <Table.TableCell>{pro}</Table.TableCell>
+                </Table.TableHeader>
+                <Table.TableBody>
+                  <Table.TableRow>
+                    <Table.TableCell>Type</Table.TableCell>
+                    <Table.TableCell>{json.metadata?.type}</Table.TableCell>
                   </Table.TableRow>
-                ))}
-              </Table.TableBody>
-            </Table.Table>
-
-            <Table.Table>
-              <Table.TableHeader>
-                <Table.TableRow>
-                  <Table.TableHead className="text-center">
-                    Competitors
-                  </Table.TableHead>
-                </Table.TableRow>
-              </Table.TableHeader>
-              <Table.TableBody>
-                {json.competitors?.map((competitor) => (
-                  <Table.TableRow key={competitor.location}>
+                  <Table.TableRow>
+                    <Table.TableCell>Name</Table.TableCell>
+                    <Table.TableCell>{json.metadata?.name}</Table.TableCell>
+                  </Table.TableRow>
+                  <Table.TableRow>
+                    <Table.TableCell>Location</Table.TableCell>
                     <Table.TableCell>
-                      {competitor.location} - {competitor.distance} meters away
+                      {json.metadata?.location_name}
                     </Table.TableCell>
                   </Table.TableRow>
-                ))}
-              </Table.TableBody>
-            </Table.Table>
+                </Table.TableBody>
+              </Table.Table>
+
+              <Table.Table>
+                <Table.TableHeader>
+                  <Table.TableRow>
+                    <Table.TableHead className="text-center">
+                      Pros
+                    </Table.TableHead>
+                  </Table.TableRow>
+                </Table.TableHeader>
+                <Table.TableBody>
+                  {json.pros?.map((pro) => (
+                    <Table.TableRow key={pro}>
+                      <Table.TableCell>{pro}</Table.TableCell>
+                    </Table.TableRow>
+                  ))}
+                </Table.TableBody>
+              </Table.Table>
+
+              <Table.Table>
+                <Table.TableHeader>
+                  <Table.TableRow>
+                    <Table.TableHead className="text-center">
+                      Cons
+                    </Table.TableHead>
+                  </Table.TableRow>
+                </Table.TableHeader>
+                <Table.TableBody>
+                  {json.cons?.map((pro) => (
+                    <Table.TableRow key={pro}>
+                      <Table.TableCell>{pro}</Table.TableCell>
+                    </Table.TableRow>
+                  ))}
+                </Table.TableBody>
+              </Table.Table>
+
+              <Table.Table>
+                <Table.TableHeader>
+                  <Table.TableRow>
+                    <Table.TableHead className="text-center">
+                      Competitors
+                    </Table.TableHead>
+                  </Table.TableRow>
+                </Table.TableHeader>
+                <Table.TableBody>
+                  {json.competitors?.map((competitor) => (
+                    <Table.TableRow key={competitor.location}>
+                      <Table.TableCell>
+                        {competitor.location} - {competitor.distance} meters
+                        away
+                      </Table.TableCell>
+                    </Table.TableRow>
+                  ))}
+                </Table.TableBody>
+              </Table.Table>
+            </div>
+            <Button onClick={() => router.refresh()}>Try Another Idea</Button>
           </div>
         )}
 
         <Dialog.Dialog open={promptDialog} onOpenChange={setPromptDialog}>
           {!json && (
             <Dialog.DialogTrigger asChild>
-              <Button variant="outline">Tell Us Your Idea</Button>
+              <Button>Tell Us Your Idea</Button>
             </Dialog.DialogTrigger>
           )}
           <Dialog.DialogContent className="sm:max-w-[425px]">
