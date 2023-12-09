@@ -224,6 +224,25 @@ export default function AppPage() {
                 ))}
               </Table.TableBody>
             </Table.Table>
+
+            <Table.Table>
+              <Table.TableHeader>
+                <Table.TableRow>
+                  <Table.TableHead className="text-center">
+                    Competitors
+                  </Table.TableHead>
+                </Table.TableRow>
+              </Table.TableHeader>
+              <Table.TableBody>
+                {json.competitors?.map((competitor) => (
+                  <Table.TableRow key={competitor.location}>
+                    <Table.TableCell>
+                      {competitor.location} - {competitor.distance} meters away
+                    </Table.TableCell>
+                  </Table.TableRow>
+                ))}
+              </Table.TableBody>
+            </Table.Table>
           </div>
         )}
 
