@@ -15,6 +15,7 @@ import { BusinessCategorie, RestaurantJson } from "@/lib/types";
 import heatmapData from "@/public/business_heatmap.json";
 import { info } from "console";
 import { useTheme } from "next-themes";
+import { budapest } from "@/lib/constants/coordinates";
 
 export function MapSegment({
   json,
@@ -111,7 +112,7 @@ function MapElement({
       },
       [json],
     );
-  });
+  }, [json, map]);
 
   useEffect(() => {
     const asyncCall = async () => {
@@ -145,15 +146,16 @@ function MapElement({
       gltf.scene.position.set(0, 0, 100);
       scene.add(gltf.scene);
 
-      let { heading } = cameraOptions;
+      // let { heading } = cameraOptions;
 
-      const animate = () => {
-        heading += 0.001;
-        map.notify("render");
-        requestAnimationFrame(animate);
-      };
+      // const animate = () => {
+      //   console.log(json)
+      //   heading += 0.1;
+      //   if (!json) map.moveCamera({ heading });
+      //   requestAnimationFrame(animate);
+      // };
 
-      requestAnimationFrame(animate);
+      // requestAnimationFrame(animate);
     });
 
     let markers: google.maps.Circle[] = [];
@@ -189,7 +191,7 @@ function MapElement({
       THREE,
       anchor: { ...cameraOptions.center, altitude: 0 },
     });
-  }, [map]);
+  }, [map, json]);
 
   useEffect(() => {
     console.log(categories);
@@ -234,7 +236,7 @@ function MapElement({
 
 const cameraOptions = {
   // szell kalman 47.50764552991384, 19.022730071164332
-  center: { lat: 47.50764552991384, lng: 19.022730071164332 },
+  center: { lat: budapest[0], lng: budapest[1] },
   heading: 0,
   tilt: 45,
   zoom: 17.5,
