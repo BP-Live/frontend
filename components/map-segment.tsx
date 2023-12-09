@@ -12,6 +12,9 @@ import axios from "@/lib/config/axios";
 import { setInterval } from "timers";
 import { RestaurantJson } from "@/lib/types";
 
+import heatmapData from "@/public/business_heatmap.json";
+
+
 export function MapSegment({ json }: { json: RestaurantJson | null }) {
   return (
     <Wrapper apiKey={process.env.NEXT_PUBLIC_MAP_API_KEY!}>
@@ -121,34 +124,50 @@ function MapElement({ json }: { json: RestaurantJson | null }) {
       requestAnimationFrame(animate);
     });
 
-    let markers: google.maps.Marker[] = [];
-
+    let markers: google.maps.Circle[] = [];
+    /*
     setInterval(() => {
       asyncCall().then((data) => {
-        markers.forEach((marker: google.maps.Marker) => {
+        markers.forEach((marker: google.maps.Circle) => {
           marker.setMap(null);
         });
 
-        data = data.slice(0, 10);
+        //data = data.slice(0, 10);
 
         data.forEach((bus: any) => {
           markers.push(
-            new google.maps.Marker({
-              position: { lat: bus.latitude, lng: bus.longitude },
-              icon: {
-                url: "/bus2.png",
-                anchor: new google.maps.Point(16, 16),
-                scaledSize: new google.maps.Size(32, 32),
-              },
-
-              //label: bus.vehicle_label,
-              //optimized: true,
+            new google.maps.Circle({
+              strokeColor: "#0000FF",
+              strokeOpacity: 0.8,
+              strokeWeight: 2,
+              fillColor: "#0000FF",
+              fillOpacity: 0.35,
               map,
-            }),
-          );
+              center: { lat: bus.latitude, lng: bus.longitude },
+              radius: 10,
+            })
+          )
         });
       });
     }, 10000);
+    */
+    // import /business_heatmap.json
+    // @ts-ignore
+
+    console.log(heatmapData["Park"]);
+
+    (heatmapData as any)["Park"].forEach((dot: any) => {
+      new google.maps.Circle({
+        strokeColor: dot[2],
+        strokeOpacity: dot[3],
+        strokeWeight: 2,
+        fillColor: dot[2],
+        fillOpacity: dot[3],
+        map,
+        center: { lat: dot[0], lng: dot[1] },
+        radius: 300,
+      });
+    });
 
     //requestAnimationFrame(animate);
 
@@ -183,5 +202,6 @@ async function getMapAsync(ref: HTMLElement): Promise<google.maps.Map> {
   )) as google.maps.MapsLibrary;
 
   const map = new Map(ref, { ...cameraOptions, ...mapOptions });
+
   return map;
 }
