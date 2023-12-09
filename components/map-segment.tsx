@@ -13,6 +13,7 @@ import { setInterval } from "timers";
 import { BusinessCategorie, RestaurantJson } from "@/lib/types";
 
 import heatmapData from "@/public/business_heatmap.json";
+import { info } from "console";
 
 export function MapSegment({
   json,
@@ -45,6 +46,8 @@ function MapElement({
     getMapAsync(mapRef.current).then((map) => setMap(map));
   }, []);
 
+  const infoWindow = new google.maps.InfoWindow();
+
   useEffect(() => {
     if (!json?.metadata?.location) return;
 
@@ -75,7 +78,7 @@ function MapElement({
     });
 
     json.premises?.forEach((premise: any) => {
-      new google.maps.Marker({
+      let marker = new google.maps.Marker({
         position: { lat: premise.lat, lng: premise.lng },
         label: premise.name,
         icon: {
@@ -85,12 +88,20 @@ function MapElement({
         },
         map,
       });
-    });
 
-    map?.moveCamera({
-      center: { lat: loc.lat, lng: loc.lng },
-    });
-  }, [json]);
+      marker.addListener("click", () => {
+        infoWindow.close();
+        infoWindow.setContent(
+          `<div><h3>${premise.address}</h3><p>Store area: ${premise.area} m2</p></div>`
+        );
+        infoWindow.open(map, marker);
+      });
+
+      map?.moveCamera({
+        center: { lat: loc.lat, lng: loc.lng },
+      });
+    }, [json]);
+  });
 
   useEffect(() => {
     const asyncCall = async () => {
@@ -135,16 +146,16 @@ function MapElement({
       requestAnimationFrame(animate);
     });
 
-    let markers: google.maps.Circle[] = [];
+    let markers: google.maps.Rectangle[] = [];
     /*
     setInterval(() => {
       asyncCall().then((data) => {
         markers.forEach((marker: google.maps.Circle) => {
           marker.setMap(null);
         });
-
+ 
         //data = data.slice(0, 10);
-
+ 
         data.forEach((bus: any) => {
           markers.push(
             new google.maps.Circle({
@@ -168,15 +179,19 @@ function MapElement({
     console.log(heatmapData["Park"]);
 
     (heatmapData as any)["Park"].forEach((dot: any) => {
-      new google.maps.Circle({
+      new google.maps.Rectangle({
         strokeColor: dot[2],
         strokeOpacity: dot[3],
         strokeWeight: 2,
         fillColor: dot[2],
         fillOpacity: dot[3],
         map,
-        center: { lat: dot[0], lng: dot[1] },
-        radius: 300,
+        bounds: {
+          north: dot[0] + 0.003,
+          south: dot[0] - 0.003,
+          east: dot[1] + 0.0046,
+          west: dot[1] - 0.0046,
+        },
       });
     });
 
