@@ -3,7 +3,6 @@
 import { getLocation, saveLocation } from "@/lib/utils/storage";
 import { ExitIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import * as Dropdown from "@/components/ui/dropdown-menu";
-import { LogoutButton } from "@/components/logout-button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MapSegment } from "@/components/map-segment";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,6 +19,10 @@ import * as z from "zod";
 import { logoutAPI } from "../api";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
+import BusinessIcon from "../../public/business.png";
+import AvailablePlaceIcon from "../../public/open.png";
+
 const promptSchema = z.object({
   prompt: z.string().min(10, {
     message: "Your company description must be at least 10 characters.",
@@ -151,6 +154,28 @@ export default function AppPage() {
         <MapSegment json={json} />
       </div>
 
+      <div className="fixed bottom-2 left-2 z-10 flex items-center gap-3">
+        <div className="w-[10rem] h-[9rem] bg-white rounded-lg flex flex-col items-center justify-start pt-2">
+          <p className="font-bold text-primary text-center">Labels</p>
+          <div className="flex items-center justify-between w-full px-3 mt-3">
+            <Image
+              src={BusinessIcon}
+              alt="Business Icon"
+              className="w-3 lg:w-4 cursor-pointer hover:scale-125 scale-100 transition-all duration-300 pointer-events-auto"
+            />
+            <p className="text-sm">Businesses</p>
+          </div>
+          <div className="flex items-center justify-between w-full px-3 mt-2">
+            <Image
+              src={AvailablePlaceIcon}
+              alt="Available Icon"
+              className="w-3 lg:w-4 cursor-pointer hover:scale-125 scale-100 transition-all duration-300 pointer-events-auto"
+            />
+            <p className="text-sm whitespace-nowrap">Available places</p>
+          </div>
+        </div>
+      </div>
+
       <div className="fixed top-6 left-6 z-10 flex items-center gap-3">
         <Dropdown.DropdownMenu>
           <Dropdown.DropdownMenuTrigger asChild>
@@ -277,7 +302,13 @@ export default function AppPage() {
                 </Table.TableBody>
               </Table.Table>
             </div>
-            <Button onClick={() => router.refresh()}>Try Another Idea</Button>
+            <Button
+              onClick={() => {
+                window.location.reload();
+              }}
+            >
+              Try Another Idea
+            </Button>
           </div>
         )}
 

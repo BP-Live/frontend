@@ -27,3 +27,12 @@ export interface Location {
   distance: number;
   location: number;
 }
+
+export type BusinessHeatmap = {
+  [key: string]: [[number, number, string, number]];
+};
+
+export type BusinessCategories = {
+  id: string;
+  category: string;
+};
