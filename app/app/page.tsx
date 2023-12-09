@@ -39,6 +39,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { promptSchema } from "@/lib/utils/form";
+import { track } from "@vercel/analytics";
 
 export default function AppPage() {
   const { setTheme, theme } = useTheme();
@@ -60,6 +61,10 @@ export default function AppPage() {
   const [json, setJson] = useState<RestaurantJson | null>(null);
 
   const [selectionArray, setSelectionArray] = useState<string[]>([]);
+
+  useEffect(() => {
+    track("Opened App Page");
+  }, []);
 
   useEffect(() => {
     const selectedCategories = categories
@@ -99,7 +104,55 @@ export default function AppPage() {
 
   useEffect(() => {
     console.log(json);
+
+    if (json?.progress === 100) {
+      track("Completed", flattenRestaurantJson(json));
+    }
   }, [json]);
+
+  function flattenRestaurantJson(restaurant: RestaurantJson): any {
+    let flatObject: any = {};
+
+    // Optional fields
+    if (restaurant.progress !== undefined) {
+      flatObject.progress = restaurant.progress;
+    }
+
+    // Flatten Metadata
+    if (restaurant.metadata) {
+      for (const key in restaurant.metadata) {
+        if (restaurant.metadata.hasOwnProperty(key)) {
+          flatObject[`metadata_${key}`] = (restaurant.metadata as any)[key];
+        }
+      }
+    }
+
+    // Flatten arrays (pros, cons)
+    if (restaurant.pros) {
+      restaurant.pros.forEach((pro, index) => {
+        flatObject[`pros_${index}`] = pro;
+      });
+    }
+
+    if (restaurant.cons) {
+      restaurant.cons.forEach((con, index) => {
+        flatObject[`cons_${index}`] = con;
+      });
+    }
+
+    // Flatten nested array of objects (premises)
+    if (restaurant.premises) {
+      restaurant.premises.forEach((premise, index) => {
+        for (const key in premise) {
+          if (premise.hasOwnProperty(key)) {
+            flatObject[`premise${index}_${key}`] = (premise as any)[key];
+          }
+        }
+      });
+    }
+
+    return flatObject;
+  }
 
   useEffect(() => {
     const location = getLocation();
@@ -118,6 +171,12 @@ export default function AppPage() {
 
   function onPrompt(values: z.infer<typeof promptSchema>) {
     setPromptLoading(true);
+
+    track("Prompted", {
+      longitude,
+      latitude,
+      prompt: values.prompt,
+    });
 
     const websocket = new WebSocket(`${process.env.NEXT_PUBLIC_BACKEND_WS}/ws`);
 

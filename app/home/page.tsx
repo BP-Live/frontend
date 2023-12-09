@@ -5,6 +5,8 @@ import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
 import BKLiveImage from "@/assets/images/bpLive.png";
 import GoogleIcon from "@/assets/images/googleIcon.webp";
+import { useEffect } from "react";
+import { track } from "@vercel/analytics";
 
 export default function HomePage() {
   const { toast } = useToast();
@@ -19,6 +21,10 @@ export default function HomePage() {
       });
     }
   };
+
+  useEffect(() => {
+    track("Opened Home Page");
+  }, []);
 
   return (
     <div className="flex flex-col w-full justify-center items-center">
