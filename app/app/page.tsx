@@ -133,7 +133,7 @@ export default function AppPage() {
 
   return (
     <>
-      <div className="fixed top-0 left-0 bottom-0 right-1/2">
+      <div className="fixed top-0 left-0 bottom-1/2 lg:bottom-0 right-0 md:right-1/2">
         <MapSegment />
       </div>
 
@@ -161,7 +161,7 @@ export default function AppPage() {
         <LogoutButton />
       </div>
 
-      <div className="absolute top-0 left-1/2 bottom-0 right-0 p-6 flex flex-col justify-center">
+      <div className="absolute top-1/2 lg:top-0 left-0 lg:left-1/2 bottom-0 right-0 p-6 flex flex-col justify-center">
         {json && (
           <div className="h-full flex flex-col justify-between">
             <Progress value={json.progress || 0} />
