@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTheme } from "next-themes";
 import * as z from "zod";
+import LogoutButton from "@/components/logout-button";
 
 const promptSchema = z.object({
   prompt: z.string().min(2, {
@@ -23,6 +24,7 @@ const promptSchema = z.object({
 });
 
 export default function AppPage() {
+  const { setTheme } = useTheme();
   const [[latitude, longitude], setLocation] = useState([47.497913, 19.040236]);
 
   const [requestLocationDialog, setRequestLocationDialog] = useState(false);
@@ -34,68 +36,26 @@ export default function AppPage() {
 
   const [json, setJson] = useState<RestaurantJson | null>(null);
 
+  const form = useForm<z.infer<typeof promptSchema>>({
+    resolver: zodResolver(promptSchema),
+    defaultValues: {
+      prompt: "",
+    },
+  });
+
   useEffect(() => {
     console.log(json);
   }, [json]);
 
   useEffect(() => {
     setLocationDialog(true);
-
-    setLocationLoading(true);
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation([position.coords.longitude, position.coords.latitude]);
-
-          setLocationLoading(false);
-          setLocationDialog(false);
-          setPromptDialog(true);
-        },
-        (error) => {
-          setLocationErrorMessage(error.message);
-          setLocationLoading(false);
-          setLocationDialog(true);
-          setPromptDialog(false);
-        },
-      );
-    } else {
-      setLocationErrorMessage("Geolocation is not supported by this browser.");
-      setPromptDialog(false);
-      setLocationDialog(true);
-    }
   }, []);
 
   useEffect(() => {
-    if (!locationDialog) return;
+    if (requestLocationDialog || locationDialog) return;
 
-    setRequestLocationDialog(true);
+    setLocationDialog(true);
   }, [locationDialog]);
-
-  useEffect(() => {
-    if (locationDialog || !requestLocationDialog) return;
-
-    setLocationLoading(true);
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          setLocation([position.coords.longitude, position.coords.latitude]);
-
-          setLocationLoading(false);
-          setPromptDialog(true);
-        },
-        () => {
-          setLocationLoading(false);
-          setPromptDialog(true);
-        },
-      );
-    } else {
-      setLocationErrorMessage("Geolocation is not supported by this browser.");
-      setPromptDialog(false);
-      setLocationDialog(true);
-    }
-  }, [locationDialog, requestLocationDialog]);
 
   function onPrompt(values: z.infer<typeof promptSchema>) {
     setPromptLoading(true);
@@ -123,22 +83,38 @@ export default function AppPage() {
     setPromptDialog(false);
   }
 
-  const form = useForm<z.infer<typeof promptSchema>>({
-    resolver: zodResolver(promptSchema),
-    defaultValues: {
-      prompt: "",
-    },
-  });
+  const onLocation = () => {
+    setLocationLoading(true);
 
-  const { setTheme } = useTheme();
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          console.log(position.coords.latitude, position.coords.longitude);
+          setLocation([position.coords.latitude, position.coords.longitude]);
+
+          setLocationLoading(false);
+          setRequestLocationDialog(true);
+          setLocationDialog(false);
+          setPromptDialog(true);
+        },
+        (error) => {
+          setLocationLoading(false);
+          setLocationErrorMessage(error.message);
+        },
+      );
+    } else {
+      setLocationLoading(false);
+      setLocationErrorMessage("Geolocation is not supported by this browser.");
+    }
+  };
 
   return (
     <>
-      <div className="fixed top-0 left-0 bottom-0 right-1/2">
+      <div className="fixed top-0 left-0 bottom-1/2 lg:bottom-0 right-0 md:right-1/2">
         <MapSegment businessLoc={json} />
       </div>
 
-      <div className="absolute top-6 left-6 z-10">
+      <div className="absolute top-6 left-6 z-10 flex items-center gap-4">
         <Dropdown.DropdownMenu>
           <Dropdown.DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon">
@@ -159,12 +135,18 @@ export default function AppPage() {
             </Dropdown.DropdownMenuItem>
           </Dropdown.DropdownMenuContent>
         </Dropdown.DropdownMenu>
+        <LogoutButton />
       </div>
 
-      <div className="absolute top-0 left-1/2 bottom-0 right-0 p-6 flex flex-col justify-center">
+      <div className="absolute top-1/2 lg:top-0 left-0 lg:left-1/2 bottom-0 right-0 p-6 flex flex-col justify-center">
         {json && (
           <div className="h-full flex flex-col justify-between">
-            <Progress value={json.progress || 0} />
+            <div className="w-full flex items-center gap-2 ">
+              <Progress value={json.progress || 0} />
+              <p className="font-bold text-primary whitespace-nowrap">
+                {json.progress} %
+              </p>
+            </div>
 
             <Table.Table>
               <Table.TableHeader>
@@ -312,7 +294,7 @@ export default function AppPage() {
             </Dialog.DialogDescription>
           </Dialog.DialogHeader>
           <Dialog.DialogFooter>
-            <Button onClick={() => setLocationDialog(false)} className="w-full">
+            <Button onClick={() => onLocation()} className="w-full">
               {locationLoading
                 ? "Loading..."
                 : locationErrorMessage
