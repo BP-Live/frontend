@@ -156,16 +156,16 @@ function MapElement({
       requestAnimationFrame(animate);
     });
 
-    let markers: google.maps.Rectangle[] = [];
-    /*
+    let markers: google.maps.Circle[] = [];
+
     setInterval(() => {
       asyncCall().then((data) => {
         markers.forEach((marker: google.maps.Circle) => {
           marker.setMap(null);
         });
- 
+
         //data = data.slice(0, 10);
- 
+
         data.forEach((bus: any) => {
           markers.push(
             new google.maps.Circle({
@@ -176,17 +176,12 @@ function MapElement({
               fillOpacity: 0.35,
               map,
               center: { lat: bus.latitude, lng: bus.longitude },
-              radius: 10,
-            })
-          )
+              radius: 7.5,
+            }),
+          );
         });
       });
     }, 10000);
-    */
-    // import /business_heatmap.json
-    // @ts-ignore
-
-    //requestAnimationFrame(animate);
 
     new ThreeJSOverlayView({
       map,
