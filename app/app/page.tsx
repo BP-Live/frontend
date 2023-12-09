@@ -2,11 +2,11 @@
 
 import { getLocation, saveLocation } from "@/lib/utils/storage";
 import { ExitIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
-import { BusinessCategorie, RestaurantJson } from "@/lib/types";
 import * as Dropdown from "@/components/ui/dropdown-menu";
+import { categories } from "@/lib/constants/categories";
+import { budapest } from "@/lib/constants/coordinates";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MapSegment } from "@/components/map-segment";
-import * as Checkbox from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import AvailablePlaceIcon from "@/public/open.png";
@@ -14,9 +14,10 @@ import BusinessIcon from "@/public/business.png";
 import * as Dialog from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import * as Table from "@/components/ui/table";
+import { columns } from "@/lib/utils/columns";
+import { RestaurantJson } from "@/lib/types";
 import * as Form from "@/components/ui/form";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useTheme } from "next-themes";
 import { logoutAPI } from "../api";
@@ -25,7 +26,6 @@ import Image from "next/image";
 import * as z from "zod";
 
 import {
-  ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
@@ -36,91 +36,17 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
-const data: BusinessCategorie[] = [
-  {
-    id: "Metro Station",
-    category: "Metro Station",
-  },
-  {
-    id: "Train Station",
-    category: "Train Station",
-  },
-  {
-    id: "Park",
-    category: "Park",
-  },
-  {
-    id: "Restaurant",
-    category: "Restaurant",
-  },
-  {
-    id: "Night Club",
-    category: "Night Club",
-  },
-  {
-    id: "ATM",
-    category: "ATM",
-  },
-  {
-    id: "Cafe",
-    category: "Cafe",
-  },
-  {
-    id: "Grocery or supermarket",
-    category: "Grocery or supermarket",
-  },
-  {
-    id: "Post office",
-    category: "Post office",
-  },
-];
-
-export const columns: ColumnDef<BusinessCategorie>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox.Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox.Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "category",
-    header: "All",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("category")}</div>
-    ),
-  },
-];
-
-const promptSchema = z.object({
-  prompt: z.string().min(10, {
-    message: "Your company description must be at least 10 characters.",
-  }),
-});
-
-const BUDAPEST = [47.497913, 19.040236];
+import { promptSchema } from "@/lib/utils/form";
 
 export default function AppPage() {
   const { setTheme } = useTheme();
-  const router = useRouter();
 
-  const [[latitude, longitude], setLocation] = useState(BUDAPEST);
+  const [[latitude, longitude], setLocation] = useState(budapest);
+
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = useState({});
 
   const [locationErrorMessage, setLocationErrorMessage] = useState("");
   const [skipLocationDialog, setSkipLocationDialog] = useState(false);
@@ -129,17 +55,12 @@ export default function AppPage() {
   const [promptLoading, setPromptLoading] = useState(false);
   const [promptDialog, setPromptDialog] = useState(false);
 
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
-
   const [json, setJson] = useState<RestaurantJson | null>(null);
 
   const [selectionArray, setSelectionArray] = useState<string[]>([]);
 
   useEffect(() => {
-    const selectedCategories = data
+    const selectedCategories = categories
       .filter((_, index) => {
         return Object.keys(rowSelection).includes(index.toString());
       })
@@ -149,8 +70,8 @@ export default function AppPage() {
   }, [rowSelection]);
 
   const table = useReactTable({
-    data,
-    columns,
+    data: categories,
+    columns: columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -223,8 +144,8 @@ export default function AppPage() {
 
     if (locationErrorMessage) {
       saveLocation({
-        lat: BUDAPEST[0],
-        lng: BUDAPEST[1],
+        lat: budapest[0],
+        lng: budapest[1],
       });
 
       setLocationLoading(false);
