@@ -2,26 +2,26 @@
 
 import { getLocation, saveLocation } from "@/lib/utils/storage";
 import { ExitIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import { BusinessCategorie, RestaurantJson } from "@/lib/types";
 import * as Dropdown from "@/components/ui/dropdown-menu";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MapSegment } from "@/components/map-segment";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
+import AvailablePlaceIcon from "@/public/open.png";
+import BusinessIcon from "@/public/business.png";
 import * as Dialog from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import * as Table from "@/components/ui/table";
 import * as Form from "@/components/ui/form";
-import { BusinessCategorie, RestaurantJson } from "@/lib/types";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useTheme } from "next-themes";
-import * as z from "zod";
 import { logoutAPI } from "../api";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import BusinessIcon from "../../public/business.png";
-import AvailablePlaceIcon from "../../public/open.png";
+import * as z from "zod";
 
 import * as Checkbox from "@/components/ui/checkbox";
 
