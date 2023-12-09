@@ -65,9 +65,9 @@ function MapElement({
       position: { lat: loc.lat, lng: loc.lng },
       label: json.metadata?.name,
       icon: {
-        url: "/business.png",
-        anchor: new google.maps.Point(20, 20),
-        scaledSize: new google.maps.Size(40, 40),
+        url: "/business2.png",
+        anchor: new google.maps.Point(20, 40),
+        scaledSize: new google.maps.Size(40, 80),
       },
       map,
     });
