@@ -65,7 +65,7 @@ function MapElement({
       position: { lat: loc.lat, lng: loc.lng },
       label: json.metadata?.name,
       icon: {
-        url: "/business2.png",
+        url: theme === "dark" ? "/business2-dark.png" : "/business2.png",
         anchor: new google.maps.Point(20, 40),
         scaledSize: new google.maps.Size(40, 80),
       },
@@ -77,7 +77,7 @@ function MapElement({
         position: { lat: comp.lat, lng: comp.lng },
         label: comp.name,
         icon: {
-          url: "/business.png",
+          url: theme === "dark" ? "/business-dark.png" : "/business.png",
           anchor: new google.maps.Point(16, 16),
           scaledSize: new google.maps.Size(32, 32),
         },
@@ -91,7 +91,7 @@ function MapElement({
           position: { lat: premise.lat, lng: premise.lng },
           label: premise.name,
           icon: {
-            url: "/open.png",
+            url: theme === "dark" ? "/open-dark.png" : "/open.png",
             anchor: new google.maps.Point(16, 16),
             scaledSize: new google.maps.Size(32, 32),
           },

@@ -11,6 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import AvailablePlaceIcon from "@/public/open.png";
 import BusinessIcon from "@/public/business.png";
+import AvailablePlaceIconDark from "@/public/open-dark.png";
+import BusinessIconDark from "@/public/business-dark.png";
 import * as Dialog from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import * as Table from "@/components/ui/table";
@@ -39,7 +41,7 @@ import {
 import { promptSchema } from "@/lib/utils/form";
 
 export default function AppPage() {
-  const { setTheme } = useTheme();
+  const { setTheme, theme } = useTheme();
 
   const [[latitude, longitude], setLocation] = useState(budapest);
 
@@ -197,11 +199,11 @@ export default function AppPage() {
       </div>
 
       <div className="fixed bottom-6 left-6 z-10 flex items-center gap-3">
-        <div className="w-[10rem] h-[9rem] bg-white rounded-lg flex flex-col items-center justify-start pt-2">
+        <div className="w-[10rem] h-[9rem] bg-background text-foreground rounded-lg flex flex-col items-center justify-start pt-2">
           <p className="font-bold text-primary text-center">Labels</p>
           <div className="flex items-center justify-between w-full px-3 mt-3">
             <Image
-              src={BusinessIcon}
+              src={theme === "dark" ? BusinessIconDark : BusinessIcon}
               alt="Business Icon"
               className="w-3 lg:w-4 cursor-pointer hover:scale-125 scale-100 transition-all duration-300 pointer-events-auto"
             />
@@ -209,7 +211,9 @@ export default function AppPage() {
           </div>
           <div className="flex items-center justify-between w-full px-3 mt-2">
             <Image
-              src={AvailablePlaceIcon}
+              src={
+                theme === "dark" ? AvailablePlaceIconDark : AvailablePlaceIcon
+              }
               alt="Available Icon"
               className="w-3 lg:w-4 cursor-pointer hover:scale-125 scale-100 transition-all duration-300 pointer-events-auto"
             />
