@@ -40,6 +40,8 @@ function MapElement({
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
 
+  const [circles, setCircles] = useState<google.maps.Circle[]>([]);
+
   useEffect(() => {
     if (!mapRef.current) return;
 
@@ -179,25 +181,6 @@ function MapElement({
     // import /business_heatmap.json
     // @ts-ignore
 
-    console.log(heatmapData["Park"]);
-
-    (heatmapData as any)["Park"].forEach((dot: any) => {
-      new google.maps.Rectangle({
-        strokeColor: dot[2],
-        strokeOpacity: dot[3],
-        strokeWeight: 2,
-        fillColor: dot[2],
-        fillOpacity: dot[3],
-        map,
-        bounds: {
-          north: dot[0] + 0.003,
-          south: dot[0] - 0.003,
-          east: dot[1] + 0.0046,
-          west: dot[1] - 0.0046,
-        },
-      });
-    });
-
     //requestAnimationFrame(animate);
 
     new ThreeJSOverlayView({
@@ -207,6 +190,45 @@ function MapElement({
       anchor: { ...cameraOptions.center, altitude: 0 },
     });
   }, [map]);
+
+
+  useEffect(() => {
+    console.log(categories);
+    console.log(circles);
+
+    circles.forEach((rect) => {
+      console.log("csumpa");
+      rect.setMap(null);
+    });
+
+    setCircles([])
+
+    //rectangels = [];
+
+    Object.keys(heatmapData).forEach((key: string) => {
+      if (!categories.includes(key)) return;
+      const data = (heatmapData as any)[key];
+      data.forEach((dot: any) => {
+        if (dot[3] == 0) return;
+        setCircles(prevRectangles => {
+          prevRectangles.push(
+            new google.maps.Circle({
+              strokeColor: dot[2],
+              strokeOpacity: dot[3],
+              strokeWeight: 2,
+              fillColor: dot[2],
+              fillOpacity: dot[3],
+              map,
+              center: { lat: dot[0], lng: dot[1] },
+              radius: 300,
+            })
+          )
+
+          return prevRectangles;
+        });
+      });
+    });
+  }, [categories]);
 
   return <div ref={mapRef} className="w-full h-full" />;
 }
