@@ -287,7 +287,7 @@ export default function AppPage() {
               {locationErrorMessage ? "Error found" : "We Need Your Permission"}
             </Dialog.DialogTitle>
             <Dialog.DialogDescription>
-              {locationErrorMessage ??
+              {locationErrorMessage ||
                 "In order to use this app you need to enable geolocation"}
             </Dialog.DialogDescription>
           </Dialog.DialogHeader>
