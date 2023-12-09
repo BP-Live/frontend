@@ -20,7 +20,6 @@ import * as z from "zod";
 import { logoutAPI } from "../api";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-
 const promptSchema = z.object({
   prompt: z.string().min(10, {
     message: "Your company description must be at least 10 characters.",
@@ -148,7 +147,7 @@ export default function AppPage() {
 
   return (
     <>
-      <div className="fixed top-0 left-0 bottom-1/4 lg:bottom-0 right-0 lg:right-1/2">
+      <div className="fixed top-0 left-0 bottom-1/4 lg:bottom-0 right-0 lg:right-1/3">
         <MapSegment json={json} />
       </div>
 
@@ -182,12 +181,15 @@ export default function AppPage() {
 
       <div
         className={cn(
-          "absolute top-3/4 lg:top-0 left-0 lg:left-1/2 bottom-0 right-0 p-6 flex flex-col justify-center z-20 bg-background min-h-[120vh] lg:min-h-[115vh] 3xl:min-h-[95vh]",
+          "absolute top-3/4 lg:top-0 left-0 lg:left-2/3 bottom-0 right-0 p-6 flex flex-col justify-center z-20 bg-background min-h-[90vh] lg:min-h-[100vh]",
         )}
       >
+        <div className="flex w-full items-center justify-center absolute top-2 left-0 z-[999] block lg:hidden">
+          <div className="w-1/6 h-[3px] bg-gray-200" />
+        </div>
         {json && (
-          <div className="h-full flex flex-col justify-between">
-            <div className="h-full flex flex-col justify-start overflow-y-auto">
+          <div className="h-full flex flex-col gap-6 lg:gap-2">
+            <div className="h-[100%] flex flex-col justify-start overflow-y-auto relative">
               <div className="w-full flex items-center gap-2">
                 <Progress value={json.progress || 0} />
                 <p className="-mt-[2px] font-bold text-primary whitespace-nowrap">
