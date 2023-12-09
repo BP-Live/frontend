@@ -13,6 +13,7 @@ import { setInterval } from "timers";
 import { RestaurantJson } from "@/lib/types";
 
 import heatmapData from "@/public/business_heatmap.json";
+import { info } from "console";
 
 
 export function MapSegment({ json }: { json: RestaurantJson | null }) {
@@ -33,6 +34,8 @@ function MapElement({ json }: { json: RestaurantJson | null }) {
 
     getMapAsync(mapRef.current).then((map) => setMap(map));
   }, []);
+
+  const infoWindow = new google.maps.InfoWindow();
 
   useEffect(() => {
     if (!json?.metadata?.location) return;
@@ -64,7 +67,7 @@ function MapElement({ json }: { json: RestaurantJson | null }) {
     });
 
     json.premises?.forEach((premise: any) => {
-      new google.maps.Marker({
+      let marker = new google.maps.Marker({
         position: { lat: premise.lat, lng: premise.lng },
         label: premise.name,
         icon: {
@@ -74,12 +77,20 @@ function MapElement({ json }: { json: RestaurantJson | null }) {
         },
         map,
       });
-    });
 
-    map?.moveCamera({
-      center: { lat: loc.lat, lng: loc.lng },
-    });
-  }, [json]);
+      marker.addListener("click", () => {
+        infoWindow.close();
+        infoWindow.setContent(
+          `<div><h3>${premise.address}</h3><p>Store area: ${premise.area} m2</p></div>`
+        );
+        infoWindow.open(map, marker);
+      });
+
+      map?.moveCamera({
+        center: { lat: loc.lat, lng: loc.lng },
+      });
+    }, [json]);
+  });
 
   useEffect(() => {
     const asyncCall = async () => {
@@ -131,9 +142,9 @@ function MapElement({ json }: { json: RestaurantJson | null }) {
         markers.forEach((marker: google.maps.Circle) => {
           marker.setMap(null);
         });
-
+ 
         //data = data.slice(0, 10);
-
+ 
         data.forEach((bus: any) => {
           markers.push(
             new google.maps.Circle({
