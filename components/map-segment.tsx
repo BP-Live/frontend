@@ -81,12 +81,15 @@ function MapElement() {
           marker.setMap(null);
         });
 
+        //data = data.slice(0, 10)
+
         data.forEach((bus: any) => {
           markers.push(
             new google.maps.Marker({
               position: { lat: bus.latitude, lng: bus.longitude },
-              label: bus.vehicle_label,
-              icon: "/bus3.png",
+              icon: "/bus2.png",
+              //label: bus.vehicle_label,
+              //optimized: true,
               map,
             }),
           );
