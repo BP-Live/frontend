@@ -97,79 +97,74 @@ function MapElement() {
     });
 
     let markers = [];
-    loader.load("/bus.gltf", (gltf: any) => {
-      gltf.scene.scale.set(0.5, 0.5, 0.5);
-      gltf.scene.rotation.x = Math.PI;
-      gltf.scene.position.set(0, 0, 100);
-      scene.add(gltf.scene);
 
-      setInterval(() => {
-        let busReq = fetchStuff().then((data) => {
-          // remove the marker
-          markers.forEach((marker: any) => {
-            marker.setMap(null);
-          });
-
-
-          console.log(data, "data");
-          data.forEach((bus: any, index: number) => {
-
-
-
-            markers.push(new google.maps.Marker({
-              position: { lat: bus.latitude, lng: bus.longitude },
-              title: bus.vehicle_label,
-              icon: "/bus.png",
-              map
-            }));
-          });
+    setInterval(() => {
+      let busReq = fetchStuff().then((data) => {
+        // remove the marker
+        markers.forEach((marker: any) => {
+          marker.setMap(null);
         });
-      }, 5000);
 
-      let colorarray = [
-        0x0000ff,
-        0xff0000,
-        0x00ff00,
-        0xffff00,
-        0x00ffff,
-        0xff00ff,
-      ];
 
-      let index = 0;
+        console.log(data, "data");
+        data.forEach((bus: any, index: number) => {
 
-      //requestAnimationFrame(animate);
 
-      new ThreeJSOverlayView({
-        map,
-        scene,
-        THREE,
-        anchor: { ...cameraOptions.center, altitude: 0 },
+
+          markers.push(new google.maps.Marker({
+            position: { lat: bus.latitude, lng: bus.longitude },
+            label: bus.vehicle_label,
+            icon: "/bus3.png",
+            map
+          }));
+        });
       });
-    }, [map]);
+    }, 5000);
 
-    return <div ref={mapRef} className="w-full h-full" />;
-  }
+    let colorarray = [
+      0x0000ff,
+      0xff0000,
+      0x00ff00,
+      0xffff00,
+      0x00ffff,
+      0xff00ff,
+    ];
+
+    let index = 0;
+
+    //requestAnimationFrame(animate);
+
+    new ThreeJSOverlayView({
+      map,
+      scene,
+      THREE,
+      anchor: { ...cameraOptions.center, altitude: 0 },
+    });
+  }, [map]);
+
+  return <div ref={mapRef} className="w-full h-full" />;
+}
 
 const cameraOptions = {
-    // szell kalman 47.50764552991384, 19.022730071164332
-    center: { lat: 47.50764552991384, lng: 19.022730071164332 },
-    heading: 0,
-    tilt: 45,
-    zoom: 17.5,
-  };
+  // szell kalman 47.50764552991384, 19.022730071164332
+  center: { lat: 47.50764552991384, lng: 19.022730071164332 },
+  heading: 0,
+  tilt: 45,
+  zoom: 17.5,
+};
 
-  const mapOptions = {
-    mapId: process.env.NEXT_PUBLIC_MAP_ID,
-    disableDefaultUI: true,
-    disableDoubleClickZoom: true,
-  };
+const mapOptions = {
+  mapId: process.env.NEXT_PUBLIC_MAP_ID,
+  disableDefaultUI: true,
+  disableDoubleClickZoom: true,
+};
 
-  async function getMapAsync(ref: HTMLElement): Promise<google.maps.Map> {
-    const { Map } = (await google.maps.importLibrary(
-      "maps",
-    )) as google.maps.MapsLibrary;
+async function getMapAsync(ref: HTMLElement): Promise<google.maps.Map> {
+  const { Map } = (await google.maps.importLibrary(
+    "maps",
+  )) as google.maps.MapsLibrary;
 
-    const map = new Map(ref, { ...cameraOptions, ...mapOptions });
-    return map;
-  }
+  const map = new Map(ref, { ...cameraOptions, ...mapOptions });
+  return map;
+}
 
