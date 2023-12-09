@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { caption, inter } from "@/lib/utils/typography";
+import { Analytics } from "@vercel/analytics/react";
 import { type ReactNode } from "react";
 import { type Metadata } from "next";
 import { cn } from "@/lib/utils";
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className={cn(inter.variable, caption.variable)}>
         <ThemeProvider>{children}</ThemeProvider>
         <Toaster />
+        <Analytics />
       </body>
     </html>
   );
