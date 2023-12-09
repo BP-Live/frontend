@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { useTheme } from "next-themes";
 import * as z from "zod";
 import LogoutButton from "@/components/logout-button";
+import { getLocation, saveLocation } from "@/lib/utils/storage";
 
 const promptSchema = z.object({
   prompt: z.string().min(2, {
@@ -48,11 +49,16 @@ export default function AppPage() {
   }, [json]);
 
   useEffect(() => {
-    setLocationDialog(true);
-  }, []);
+    const location = getLocation();
 
-  useEffect(() => {
-    if (requestLocationDialog || locationDialog) return;
+    if (location) {
+      setLocation([location.lat, location.lng]);
+      setRequestLocationDialog(true);
+      setLocationDialog(false);
+      setPromptDialog(true);
+    }
+
+    if (requestLocationDialog || locationDialog || location) return;
 
     setLocationDialog(true);
   }, [locationDialog]);
@@ -74,7 +80,6 @@ export default function AppPage() {
 
     websocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("miafasz")
       console.log(data);
       setJson((json) => ({ ...json, ...data }));
     };
@@ -91,6 +96,11 @@ export default function AppPage() {
         async (position) => {
           console.log(position.coords.latitude, position.coords.longitude);
           setLocation([position.coords.latitude, position.coords.longitude]);
+
+          saveLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
 
           setLocationLoading(false);
           setRequestLocationDialog(true);
@@ -111,7 +121,7 @@ export default function AppPage() {
   return (
     <>
       <div className="fixed top-0 left-0 bottom-1/2 lg:bottom-0 right-0 md:right-1/2">
-        <MapSegment businessLoc={json} />
+        <MapSegment json={json} />
       </div>
 
       <div className="absolute top-6 left-6 z-10 flex items-center gap-4">

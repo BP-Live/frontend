@@ -10,16 +10,17 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { ThreeJSOverlayView } from "@googlemaps/three";
 import axios from "@/lib/config/axios";
 import { setInterval } from "timers";
+import { RestaurantJson } from "@/lib/types";
 
-export function MapSegment(props: any) {
+export function MapSegment({ json }: { json: RestaurantJson | null }) {
   return (
     <Wrapper apiKey={process.env.NEXT_PUBLIC_MAP_API_KEY!}>
-      <MapElement businessLoc={props.businessLoc} />
+      <MapElement json={json} />
     </Wrapper>
   );
 }
 
-function MapElement(props: any) {
+function MapElement({ json }: { json: RestaurantJson | null }) {
   const mapRef = useRef<HTMLDivElement | null>(null);
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -31,20 +32,18 @@ function MapElement(props: any) {
   }, []);
 
   useEffect(() => {
-    if (!props.businessLoc) return;
-    if (!props.businessLoc.metadata) return;
-    console.log(props.businessLoc.metadata.location);
-    let loc = props.businessLoc.metadata.location;
+    if (!json?.metadata?.location) return;
+
+    const loc = json.metadata?.location;
+
     new google.maps.Marker({
       position: { lat: loc.lat, lng: loc.lng },
-      label: props.businessLoc.metadata.name,
+      label: json.metadata?.name,
       icon: "/business2.png",
       map,
     });
 
-    if (!props.businessLoc.competitors) return;
-
-    props.businessLoc.competitors.forEach((comp: any) => {
+    json.competitors?.forEach((comp: any) => {
       new google.maps.Marker({
         position: { lat: comp.lat, lng: comp.lng },
         label: comp.name,
@@ -56,8 +55,7 @@ function MapElement(props: any) {
     map?.moveCamera({
       center: { lat: loc.lat, lng: loc.lng },
     });
-
-  }, [props.businessLoc]);
+  }, [json?.metadata?.location]);
 
   useEffect(() => {
     const asyncCall = async () => {
@@ -110,7 +108,7 @@ function MapElement(props: any) {
           marker.setMap(null);
         });
 
-        data = data.slice(0, 10)
+        data = data.slice(0, 10);
 
         data.forEach((bus: any) => {
           markers.push(

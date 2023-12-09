@@ -9,7 +9,7 @@ export interface RestaurantJson {
 export interface Metadata {
   type: string;
   name: string;
-  location: string;
+  location: { lat: number; lng: number };
 }
 
 export interface Location {
