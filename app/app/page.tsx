@@ -3,7 +3,6 @@
 import { getLocation, saveLocation } from "@/lib/utils/storage";
 import { ExitIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import * as Dropdown from "@/components/ui/dropdown-menu";
-import { LogoutButton } from "@/components/logout-button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MapSegment } from "@/components/map-segment";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,6 +19,7 @@ import * as z from "zod";
 import { logoutAPI } from "../api";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+
 const promptSchema = z.object({
   prompt: z.string().min(10, {
     message: "Your company description must be at least 10 characters.",
