@@ -95,7 +95,7 @@ function MapElement() {
           );
         });
       });
-    }, 5000);
+    }, 10000);
 
     //requestAnimationFrame(animate);
 
