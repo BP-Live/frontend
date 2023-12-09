@@ -56,7 +56,7 @@ function MapElement() {
       let { tilt, heading, zoom } = cameraOptions;
     });
 
-    loader.load("/bus.gltf", (gltf) => {
+    loader.load("/bus.gltf", (gltf: any) => {
       gltf.scene.scale.set(0.5, 0.5, 0.5);
       gltf.scene.rotation.x = Math.PI;
       gltf.scene.position.set(0, 0, 100);
