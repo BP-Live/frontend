@@ -114,7 +114,8 @@ export default function AppPage() {
 
     websocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-
+      console.log("miafasz")
+      console.log(data);
       setJson((json) => ({ ...json, ...data }));
     };
 
@@ -134,7 +135,7 @@ export default function AppPage() {
   return (
     <>
       <div className="fixed top-0 left-0 bottom-0 right-1/2">
-        <MapSegment />
+        <MapSegment businessLoc={json} />
       </div>
 
       <div className="absolute top-6 left-6 z-10">

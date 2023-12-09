@@ -11,15 +11,15 @@ import { ThreeJSOverlayView } from "@googlemaps/three";
 import axios from "@/lib/config/axios";
 import { setInterval } from "timers";
 
-export function MapSegment() {
+export function MapSegment(props: any) {
   return (
     <Wrapper apiKey={process.env.NEXT_PUBLIC_MAP_API_KEY!}>
-      <MapElement />
+      <MapElement businessLoc={props.businessLoc} />
     </Wrapper>
   );
 }
 
-function MapElement() {
+function MapElement(props: any) {
   const mapRef = useRef<HTMLDivElement | null>(null);
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -29,6 +29,35 @@ function MapElement() {
 
     getMapAsync(mapRef.current).then((map) => setMap(map));
   }, []);
+
+  useEffect(() => {
+    if (!props.businessLoc) return;
+    if (!props.businessLoc.metadata) return;
+    console.log(props.businessLoc.metadata.location);
+    let loc = props.businessLoc.metadata.location;
+    new google.maps.Marker({
+      position: { lat: loc.lat, lng: loc.lng },
+      label: props.businessLoc.metadata.name,
+      icon: "/business2.png",
+      map,
+    });
+
+    if (!props.businessLoc.competitors) return;
+
+    props.businessLoc.competitors.forEach((comp: any) => {
+      new google.maps.Marker({
+        position: { lat: comp.lat, lng: comp.lng },
+        label: comp.name,
+        icon: "/business2.png",
+        map,
+      });
+    });
+
+    map?.moveCamera({
+      center: { lat: loc.lat, lng: loc.lng },
+    });
+
+  }, [props.businessLoc]);
 
   useEffect(() => {
     const asyncCall = async () => {
@@ -81,7 +110,7 @@ function MapElement() {
           marker.setMap(null);
         });
 
-        //data = data.slice(0, 10)
+        data = data.slice(0, 10)
 
         data.forEach((bus: any) => {
           markers.push(
