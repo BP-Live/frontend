@@ -16,4 +16,5 @@ export interface Location {
   lat: number;
   lng: number;
   distance: number;
+  location: number;
 }
