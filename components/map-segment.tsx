@@ -134,7 +134,7 @@ function MapElement({ json }: { json: RestaurantJson | null }) {
       requestAnimationFrame(animate);
     });
 
-    let markers: google.maps.Circle[] = [];
+    let markers: google.maps.Rectangle[] = [];
     /*
     setInterval(() => {
       asyncCall().then((data) => {
@@ -167,15 +167,19 @@ function MapElement({ json }: { json: RestaurantJson | null }) {
     console.log(heatmapData["Park"]);
 
     (heatmapData as any)["Park"].forEach((dot: any) => {
-      new google.maps.Circle({
+      new google.maps.Rectangle({
         strokeColor: dot[2],
         strokeOpacity: dot[3],
         strokeWeight: 2,
         fillColor: dot[2],
         fillOpacity: dot[3],
         map,
-        center: { lat: dot[0], lng: dot[1] },
-        radius: 300,
+        bounds: {
+          north: dot[0] + 0.003,
+          south: dot[0] - 0.003,
+          east: dot[1] + 0.0046,
+          west: dot[1] - 0.0046,
+        },
       });
     });
 
