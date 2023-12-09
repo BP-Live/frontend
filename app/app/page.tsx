@@ -91,6 +91,13 @@ export default function AppPage() {
   const onLocation = () => {
     setLocationLoading(true);
 
+    if (locationErrorMessage) {
+      setLocationLoading(false);
+      setRequestLocationDialog(true);
+      setLocationDialog(false);
+      setPromptDialog(true);
+    }
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
