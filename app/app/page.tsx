@@ -182,16 +182,12 @@ export default function AppPage() {
 
       <div
         className={cn(
-          "absolute top-3/4 lg:top-0 left-0 lg:left-1/2 bottom-0 right-0 p-6 flex flex-col justify-center z-20  bg-background",
-          {
-            "min-h-screen": json,
-            "min-h-0": !json,
-          },
+          "absolute top-3/4 lg:top-0 left-0 lg:left-1/2 bottom-0 right-0 p-6 flex flex-col justify-center z-20 bg-background min-h-[120vh] lg:min-h-[115vh] 3xl:min-h-[95vh]",
         )}
       >
         {json && (
           <div className="h-full flex flex-col justify-between">
-            <div className="h-full flex flex-col justify-start">
+            <div className="h-full flex flex-col justify-start overflow-y-auto">
               <div className="w-full flex items-center gap-2">
                 <Progress value={json.progress || 0} />
                 <p className="-mt-[2px] font-bold text-primary whitespace-nowrap">
@@ -199,7 +195,7 @@ export default function AppPage() {
                 </p>
               </div>
 
-              <Table.Table className="">
+              <Table.Table>
                 <Table.TableHeader>
                   <Table.TableRow>
                     <Table.TableHead className="text-center" colSpan={2}>
