@@ -17,6 +17,7 @@ import { useTheme } from "next-themes";
 import * as z from "zod";
 import LogoutButton from "@/components/logout-button";
 import { getLocation, saveLocation } from "@/lib/utils/storage";
+import { Buda } from "next/font/google";
 
 const promptSchema = z.object({
   prompt: z.string().min(2, {
@@ -24,9 +25,11 @@ const promptSchema = z.object({
   }),
 });
 
+const BUDAPEST = [47.497913, 19.040236];
+
 export default function AppPage() {
   const { setTheme } = useTheme();
-  const [[latitude, longitude], setLocation] = useState([47.497913, 19.040236]);
+  const [[latitude, longitude], setLocation] = useState(BUDAPEST);
 
   const [requestLocationDialog, setRequestLocationDialog] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
@@ -92,6 +95,11 @@ export default function AppPage() {
     setLocationLoading(true);
 
     if (locationErrorMessage) {
+      saveLocation({
+        lat: BUDAPEST[0],
+        lng: BUDAPEST[1],
+      });
+
       setLocationLoading(false);
       setRequestLocationDialog(true);
       setLocationDialog(false);
