@@ -1,61 +1,20 @@
 "use client";
 
-import { DetailsSegment } from "@/components/details-segment";
-import { MapSegment } from "@/components/map-segment";
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
-import Header from "@/components/header";
-import { RestaurantJson } from "@/lib/types";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-import { Textarea } from "@/components/ui/textarea";
-import { set } from "date-fns";
-import { Progress } from "@/components/ui/progress";
-import { ToggleThemeButton } from "@/components/toggle-theme-button";
-import { useTheme } from "next-themes";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import * as Dropdown from "@/components/ui/dropdown-menu";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MapSegment } from "@/components/map-segment";
+import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
+import * as Dialog from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import * as Table from "@/components/ui/table";
+import * as Form from "@/components/ui/form";
+import { RestaurantJson } from "@/lib/types";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useTheme } from "next-themes";
+import * as z from "zod";
 
 const promptSchema = z.object({
   prompt: z.string().min(2, {
@@ -179,26 +138,26 @@ export default function AppPage() {
       </div>
 
       <div className="absolute top-6 left-6 z-10">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+        <Dropdown.DropdownMenu>
+          <Dropdown.DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon">
               <span className="sr-only">Toggle theme</span>
               <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            <DropdownMenuItem onClick={() => setTheme("light")}>
+          </Dropdown.DropdownMenuTrigger>
+          <Dropdown.DropdownMenuContent align="start">
+            <Dropdown.DropdownMenuItem onClick={() => setTheme("light")}>
               Light
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("dark")}>
+            </Dropdown.DropdownMenuItem>
+            <Dropdown.DropdownMenuItem onClick={() => setTheme("dark")}>
               Dark
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("system")}>
+            </Dropdown.DropdownMenuItem>
+            <Dropdown.DropdownMenuItem onClick={() => setTheme("system")}>
               System
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </Dropdown.DropdownMenuItem>
+          </Dropdown.DropdownMenuContent>
+        </Dropdown.DropdownMenu>
       </div>
 
       <div className="absolute top-0 left-1/2 bottom-0 right-0 p-6 flex flex-col justify-center">
@@ -206,129 +165,133 @@ export default function AppPage() {
           <div className="h-full flex flex-col justify-between">
             <Progress value={json.progress || 0} />
 
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-center" colSpan={2}>
+            <Table.Table>
+              <Table.TableHeader>
+                <Table.TableRow>
+                  <Table.TableHead className="text-center" colSpan={2}>
                     Details
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell>Type</TableCell>
-                  <TableCell>{json.metadata?.type}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>{json.metadata?.name}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Location</TableCell>
-                  <TableCell>
+                  </Table.TableHead>
+                </Table.TableRow>
+              </Table.TableHeader>
+              <Table.TableBody>
+                <Table.TableRow>
+                  <Table.TableCell>Type</Table.TableCell>
+                  <Table.TableCell>{json.metadata?.type}</Table.TableCell>
+                </Table.TableRow>
+                <Table.TableRow>
+                  <Table.TableCell>Name</Table.TableCell>
+                  <Table.TableCell>{json.metadata?.name}</Table.TableCell>
+                </Table.TableRow>
+                <Table.TableRow>
+                  <Table.TableCell>Location</Table.TableCell>
+                  <Table.TableCell>
                     {JSON.stringify(json.metadata?.location || {})}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+                  </Table.TableCell>
+                </Table.TableRow>
+              </Table.TableBody>
+            </Table.Table>
 
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-center">Pros</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <Table.Table>
+              <Table.TableHeader>
+                <Table.TableRow>
+                  <Table.TableHead className="text-center">
+                    Pros
+                  </Table.TableHead>
+                </Table.TableRow>
+              </Table.TableHeader>
+              <Table.TableBody>
                 {json.pros?.map((pro) => (
-                  <TableRow key={pro}>
-                    <TableCell>{pro}</TableCell>
-                  </TableRow>
+                  <Table.TableRow key={pro}>
+                    <Table.TableCell>{pro}</Table.TableCell>
+                  </Table.TableRow>
                 ))}
-              </TableBody>
-            </Table>
+              </Table.TableBody>
+            </Table.Table>
 
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-center">Cons</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <Table.Table>
+              <Table.TableHeader>
+                <Table.TableRow>
+                  <Table.TableHead className="text-center">
+                    Cons
+                  </Table.TableHead>
+                </Table.TableRow>
+              </Table.TableHeader>
+              <Table.TableBody>
                 {json.cons?.map((pro) => (
-                  <TableRow key={pro}>
-                    <TableCell>{pro}</TableCell>
-                  </TableRow>
+                  <Table.TableRow key={pro}>
+                    <Table.TableCell>{pro}</Table.TableCell>
+                  </Table.TableRow>
                 ))}
-              </TableBody>
-            </Table>
+              </Table.TableBody>
+            </Table.Table>
           </div>
         )}
 
-        <Dialog open={promptDialog} onOpenChange={setPromptDialog}>
+        <Dialog.Dialog open={promptDialog} onOpenChange={setPromptDialog}>
           {!json && (
-            <DialogTrigger asChild>
+            <Dialog.DialogTrigger asChild>
               <Button variant="outline">Tell Us Your Idea</Button>
-            </DialogTrigger>
+            </Dialog.DialogTrigger>
           )}
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Tell Us Your Idea</DialogTitle>
-              <DialogDescription>
+          <Dialog.DialogContent className="sm:max-w-[425px]">
+            <Dialog.DialogHeader>
+              <Dialog.DialogTitle>Tell Us Your Idea</Dialog.DialogTitle>
+              <Dialog.DialogDescription>
                 Describe your idea for a company, so we can tell you some
                 statistics about it.
-              </DialogDescription>
-            </DialogHeader>
+              </Dialog.DialogDescription>
+            </Dialog.DialogHeader>
 
-            <Form {...form}>
+            <Form.Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onPrompt)}
                 className="space-y-8"
               >
-                <FormField
+                <Form.FormField
                   control={form.control}
                   name="prompt"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Your Idea</FormLabel>
-                      <FormControl>
+                    <Form.FormItem>
+                      <Form.FormLabel>Your Idea</Form.FormLabel>
+                      <Form.FormControl>
                         <Textarea
                           className="min-h-[20vh]"
                           placeholder="My Company is going to be ..."
                           {...field}
                         />
-                      </FormControl>
-                      <FormDescription>
+                      </Form.FormControl>
+                      <Form.FormDescription>
                         Tell us about the type of company you want to start.
                         Where do you want to start it? What do you want to sell?
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
+                      </Form.FormDescription>
+                      <Form.FormMessage />
+                    </Form.FormItem>
                   )}
                 />
 
-                <DialogFooter>
+                <Dialog.DialogFooter>
                   <Button type="submit" className="w-full">
                     {promptLoading ? "Loading..." : "Submit"}
                   </Button>
-                </DialogFooter>
+                </Dialog.DialogFooter>
               </form>
-            </Form>
-          </DialogContent>
-        </Dialog>
+            </Form.Form>
+          </Dialog.DialogContent>
+        </Dialog.Dialog>
       </div>
 
-      <Dialog open={locationDialog} onOpenChange={setLocationDialog}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>
+      <Dialog.Dialog open={locationDialog} onOpenChange={setLocationDialog}>
+        <Dialog.DialogContent className="sm:max-w-[425px]">
+          <Dialog.DialogHeader>
+            <Dialog.DialogTitle>
               {locationErrorMessage ? "Error found" : "We Need Your Permission"}
-            </DialogTitle>
-            <DialogDescription>
+            </Dialog.DialogTitle>
+            <Dialog.DialogDescription>
               {locationErrorMessage ??
                 "In order to use this app you need to enable geolocation"}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
+            </Dialog.DialogDescription>
+          </Dialog.DialogHeader>
+          <Dialog.DialogFooter>
             <Button onClick={() => setLocationDialog(false)} className="w-full">
               {locationLoading
                 ? "Loading..."
@@ -336,9 +299,9 @@ export default function AppPage() {
                   ? "Use Default Location"
                   : "Enable Location"}
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </Dialog.DialogFooter>
+        </Dialog.DialogContent>
+      </Dialog.Dialog>
     </>
   );
 }
