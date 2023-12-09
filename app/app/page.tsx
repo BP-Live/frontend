@@ -282,7 +282,10 @@ export default function AppPage() {
             <DialogTitle>
               {locationErrorMessage ? "Error found" : "We Need Your Permission"}
             </DialogTitle>
-            <DialogDescription>{locationErrorMessage}</DialogDescription>
+            <DialogDescription>
+              {locationErrorMessage ??
+                "In order to use this app you need to enable geolocation"}
+            </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button onClick={() => setLocationDialog(false)} className="w-full">
