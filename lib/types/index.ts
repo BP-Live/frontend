@@ -15,5 +15,5 @@ export interface Metadata {
 export interface Location {
   lat: number;
   lng: number;
-  time: number;
+  distance: number;
 }
