@@ -277,7 +277,13 @@ export default function AppPage() {
                 </Table.TableBody>
               </Table.Table>
             </div>
-            <Button onClick={() => router.refresh()}>Try Another Idea</Button>
+            <Button
+              onClick={() => {
+                window.location.reload();
+              }}
+            >
+              Try Another Idea
+            </Button>
           </div>
         )}
 

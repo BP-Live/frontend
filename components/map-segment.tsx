@@ -14,7 +14,6 @@ import { RestaurantJson } from "@/lib/types";
 
 import heatmapData from "@/public/business_heatmap.json";
 
-
 export function MapSegment({ json }: { json: RestaurantJson | null }) {
   return (
     <Wrapper apiKey={process.env.NEXT_PUBLIC_MAP_API_KEY!}>
