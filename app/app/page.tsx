@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTheme } from "next-themes";
 import * as z from "zod";
+import LogoutButton from "@/components/logout-button";
 
 const promptSchema = z.object({
   prompt: z.string().min(2, {
@@ -23,6 +24,7 @@ const promptSchema = z.object({
 });
 
 export default function AppPage() {
+  const { setTheme } = useTheme();
   const [[latitude, longitude], setLocation] = useState([47.497913, 19.040236]);
 
   const [requestLocationDialog, setRequestLocationDialog] = useState(false);
@@ -33,6 +35,13 @@ export default function AppPage() {
   const [promptDialog, setPromptDialog] = useState(false);
 
   const [json, setJson] = useState<RestaurantJson | null>(null);
+
+  const form = useForm<z.infer<typeof promptSchema>>({
+    resolver: zodResolver(promptSchema),
+    defaultValues: {
+      prompt: "",
+    },
+  });
 
   useEffect(() => {
     console.log(json);
@@ -122,22 +131,13 @@ export default function AppPage() {
     setPromptDialog(false);
   }
 
-  const form = useForm<z.infer<typeof promptSchema>>({
-    resolver: zodResolver(promptSchema),
-    defaultValues: {
-      prompt: "",
-    },
-  });
-
-  const { setTheme } = useTheme();
-
   return (
     <>
       <div className="fixed top-0 left-0 bottom-0 right-1/2">
         <MapSegment />
       </div>
 
-      <div className="absolute top-6 left-6 z-10">
+      <div className="absolute top-6 left-6 z-10 flex items-center gap-4">
         <Dropdown.DropdownMenu>
           <Dropdown.DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon">
@@ -158,6 +158,7 @@ export default function AppPage() {
             </Dropdown.DropdownMenuItem>
           </Dropdown.DropdownMenuContent>
         </Dropdown.DropdownMenu>
+        <LogoutButton />
       </div>
 
       <div className="absolute top-0 left-1/2 bottom-0 right-0 p-6 flex flex-col justify-center">
