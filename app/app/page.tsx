@@ -6,6 +6,7 @@ import { BusinessCategorie, RestaurantJson } from "@/lib/types";
 import * as Dropdown from "@/components/ui/dropdown-menu";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MapSegment } from "@/components/map-segment";
+import * as Checkbox from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import AvailablePlaceIcon from "@/public/open.png";
@@ -22,8 +23,6 @@ import { logoutAPI } from "../api";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import * as z from "zod";
-
-import * as Checkbox from "@/components/ui/checkbox";
 
 import {
   ColumnDef,
