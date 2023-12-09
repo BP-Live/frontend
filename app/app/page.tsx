@@ -19,8 +19,8 @@ import { useTheme } from "next-themes";
 import * as z from "zod";
 
 const promptSchema = z.object({
-  prompt: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+  prompt: z.string().min(10, {
+    message: "Your company description must be at least 10 characters.",
   }),
 });
 
@@ -28,13 +28,14 @@ const BUDAPEST = [47.497913, 19.040236];
 
 export default function AppPage() {
   const { setTheme } = useTheme();
+
   const [[latitude, longitude], setLocation] = useState(BUDAPEST);
 
-  const [requestLocationDialog, setRequestLocationDialog] = useState(false);
+  const [locationErrorMessage, setLocationErrorMessage] = useState("");
+  const [skipLocationDialog, setSkipLocationDialog] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationDialog, setLocationDialog] = useState(false);
   const [promptLoading, setPromptLoading] = useState(false);
-  const [locationErrorMessage, setLocationErrorMessage] = useState("");
   const [promptDialog, setPromptDialog] = useState(false);
 
   const [json, setJson] = useState<RestaurantJson | null>(null);
@@ -55,12 +56,12 @@ export default function AppPage() {
 
     if (location) {
       setLocation([location.lat, location.lng]);
-      setRequestLocationDialog(true);
+      setSkipLocationDialog(true);
       setLocationDialog(false);
       setPromptDialog(true);
     }
 
-    if (requestLocationDialog || locationDialog || location) return;
+    if (skipLocationDialog || locationDialog || location) return;
 
     setLocationDialog(true);
   }, [locationDialog]);
@@ -100,7 +101,7 @@ export default function AppPage() {
       });
 
       setLocationLoading(false);
-      setRequestLocationDialog(true);
+      setSkipLocationDialog(true);
       setLocationDialog(false);
       setPromptDialog(true);
     }
@@ -117,7 +118,7 @@ export default function AppPage() {
           });
 
           setLocationLoading(false);
-          setRequestLocationDialog(true);
+          setSkipLocationDialog(true);
           setLocationDialog(false);
           setPromptDialog(true);
         },
