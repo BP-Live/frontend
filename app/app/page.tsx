@@ -49,25 +49,6 @@ export default function AppPage() {
 
   useEffect(() => {
     setLocationDialog(true);
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          setLocation([position.coords.latitude, position.coords.longitude]);
-
-          setLocationLoading(false);
-          setRequestLocationDialog(true);
-          setLocationDialog(false);
-          setPromptDialog(true);
-        },
-        (error) => {
-          setLocationLoading(false);
-          setLocationErrorMessage(error.message);
-        },
-      );
-    } else {
-      setLocationErrorMessage("Geolocation is not supported by this browser.");
-    }
   }, []);
 
   useEffect(() => {
@@ -102,9 +83,28 @@ export default function AppPage() {
   }
 
   const onLocation = () => {
-    setRequestLocationDialog(true);
-    setLocationDialog(false);
-    setPromptDialog(true);
+    setLocationLoading(true);
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          console.log(position.coords.latitude, position.coords.longitude);
+          setLocation([position.coords.latitude, position.coords.longitude]);
+
+          setLocationLoading(false);
+          setRequestLocationDialog(true);
+          setLocationDialog(false);
+          setPromptDialog(true);
+        },
+        (error) => {
+          setLocationLoading(false);
+          setLocationErrorMessage(error.message);
+        },
+      );
+    } else {
+      setLocationLoading(false);
+      setLocationErrorMessage("Geolocation is not supported by this browser.");
+    }
   };
 
   return (
