@@ -309,7 +309,7 @@ export default function AppPage() {
           "absolute top-3/4 lg:top-0 left-0 lg:left-2/3 bottom-0 right-0 p-6 flex flex-col justify-center z-20 bg-background min-h-[90vh] lg:min-h-[100vh]",
         )}
       >
-        <div className="flex w-full items-center justify-center absolute top-2 left-0 z-[999] block lg:hidden">
+        <div className="flex w-full items-center justify-center absolute top-2 left-0 z-[999] lg:hidden">
           <div className="w-1/6 h-[3px] bg-gray-200" />
         </div>
         {json && (
