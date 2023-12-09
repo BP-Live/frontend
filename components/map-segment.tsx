@@ -44,6 +44,7 @@ function MapElement({ json }: { json: RestaurantJson | null }) {
     });
 
     json.competitors?.forEach((comp: any) => {
+      console.log(comp, "kompetitor");
       new google.maps.Marker({
         position: { lat: comp.lat, lng: comp.lng },
         label: comp.name,
@@ -55,7 +56,7 @@ function MapElement({ json }: { json: RestaurantJson | null }) {
     map?.moveCamera({
       center: { lat: loc.lat, lng: loc.lng },
     });
-  }, [json?.metadata?.location]);
+  }, [json]);
 
   useEffect(() => {
     const asyncCall = async () => {
