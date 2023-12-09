@@ -106,66 +106,9 @@ export default function AppPage() {
     console.log(json);
 
     if (json?.progress === 100) {
-      track("Completed", flattenRestaurantJson(json));
+      track("Completed", { data: JSON.stringify(json) });
     }
   }, [json]);
-  function flattenRestaurantJson(restaurant: RestaurantJson): any {
-    let flatObject: any = {};
-
-    // Optional fields
-    if (restaurant.progress !== undefined) {
-      flatObject.progress = restaurant.progress;
-    }
-
-    // Flatten Metadata including location
-    if (restaurant.metadata) {
-      for (const key in restaurant.metadata) {
-        if (restaurant.metadata.hasOwnProperty(key)) {
-          const value = (restaurant.metadata as any)[key];
-          if (
-            typeof value === "object" &&
-            value !== null &&
-            key === "location"
-          ) {
-            // Further flattening for location object
-            for (const locKey in value) {
-              if (value.hasOwnProperty(locKey)) {
-                flatObject[`metadata_location_${locKey}`] = value[locKey];
-              }
-            }
-          } else {
-            flatObject[`metadata_${key}`] = value;
-          }
-        }
-      }
-    }
-
-    // Flatten arrays (pros, cons)
-    if (restaurant.pros) {
-      restaurant.pros.forEach((pro, index) => {
-        flatObject[`pros_${index}`] = pro;
-      });
-    }
-
-    if (restaurant.cons) {
-      restaurant.cons.forEach((con, index) => {
-        flatObject[`cons_${index}`] = con;
-      });
-    }
-
-    // Flatten nested array of objects (premises)
-    if (restaurant.premises) {
-      restaurant.premises.forEach((premise, index) => {
-        for (const key in premise) {
-          if (premise.hasOwnProperty(key)) {
-            flatObject[`premise${index}_${key}`] = (premise as any)[key];
-          }
-        }
-      });
-    }
-
-    return flatObject;
-  }
 
   useEffect(() => {
     const location = getLocation();
