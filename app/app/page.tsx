@@ -164,7 +164,12 @@ export default function AppPage() {
       <div className="absolute top-1/2 lg:top-0 left-0 lg:left-1/2 bottom-0 right-0 p-6 flex flex-col justify-center">
         {json && (
           <div className="h-full flex flex-col justify-between">
-            <Progress value={json.progress || 0} />
+            <div className="w-full flex items-center gap-2 ">
+              <Progress value={json.progress || 0} />
+              <p className="font-bold text-primary whitespace-nowrap">
+                {json.progress} %
+              </p>
+            </div>
 
             <Table.Table>
               <Table.TableHeader>
