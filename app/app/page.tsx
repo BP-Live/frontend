@@ -50,61 +50,31 @@ export default function AppPage() {
   useEffect(() => {
     setLocationDialog(true);
 
-    setLocationLoading(true);
-
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation([position.coords.longitude, position.coords.latitude]);
+        async (position) => {
+          setLocation([position.coords.latitude, position.coords.longitude]);
 
           setLocationLoading(false);
+          setRequestLocationDialog(true);
           setLocationDialog(false);
           setPromptDialog(true);
         },
         (error) => {
-          setLocationErrorMessage(error.message);
           setLocationLoading(false);
-          setLocationDialog(true);
-          setPromptDialog(false);
+          setLocationErrorMessage(error.message);
         },
       );
     } else {
       setLocationErrorMessage("Geolocation is not supported by this browser.");
-      setPromptDialog(false);
-      setLocationDialog(true);
     }
   }, []);
 
   useEffect(() => {
-    if (!locationDialog) return;
+    if (requestLocationDialog || locationDialog) return;
 
-    setRequestLocationDialog(true);
+    setLocationDialog(true);
   }, [locationDialog]);
-
-  useEffect(() => {
-    if (locationDialog || !requestLocationDialog) return;
-
-    setLocationLoading(true);
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          setLocation([position.coords.longitude, position.coords.latitude]);
-
-          setLocationLoading(false);
-          setPromptDialog(true);
-        },
-        () => {
-          setLocationLoading(false);
-          setPromptDialog(true);
-        },
-      );
-    } else {
-      setLocationErrorMessage("Geolocation is not supported by this browser.");
-      setPromptDialog(false);
-      setLocationDialog(true);
-    }
-  }, [locationDialog, requestLocationDialog]);
 
   function onPrompt(values: z.infer<typeof promptSchema>) {
     setPromptLoading(true);
@@ -130,6 +100,12 @@ export default function AppPage() {
     setPromptLoading(false);
     setPromptDialog(false);
   }
+
+  const onLocation = () => {
+    setRequestLocationDialog(true);
+    setLocationDialog(false);
+    setPromptDialog(true);
+  };
 
   return (
     <>
@@ -312,7 +288,7 @@ export default function AppPage() {
             </Dialog.DialogDescription>
           </Dialog.DialogHeader>
           <Dialog.DialogFooter>
-            <Button onClick={() => setLocationDialog(false)} className="w-full">
+            <Button onClick={() => onLocation()} className="w-full">
               {locationLoading
                 ? "Loading..."
                 : locationErrorMessage
