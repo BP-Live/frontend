@@ -109,7 +109,6 @@ export default function AppPage() {
       track("Completed", flattenRestaurantJson(json));
     }
   }, [json]);
-
   function flattenRestaurantJson(restaurant: RestaurantJson): any {
     let flatObject: any = {};
 
@@ -118,11 +117,25 @@ export default function AppPage() {
       flatObject.progress = restaurant.progress;
     }
 
-    // Flatten Metadata
+    // Flatten Metadata including location
     if (restaurant.metadata) {
       for (const key in restaurant.metadata) {
         if (restaurant.metadata.hasOwnProperty(key)) {
-          flatObject[`metadata_${key}`] = (restaurant.metadata as any)[key];
+          const value = (restaurant.metadata as any)[key];
+          if (
+            typeof value === "object" &&
+            value !== null &&
+            key === "location"
+          ) {
+            // Further flattening for location object
+            for (const locKey in value) {
+              if (value.hasOwnProperty(locKey)) {
+                flatObject[`metadata_location_${locKey}`] = value[locKey];
+              }
+            }
+          } else {
+            flatObject[`metadata_${key}`] = value;
+          }
         }
       }
     }
